@@ -1,0 +1,16 @@
+[
+{
+  "modid": "taecosmetics",
+  "name": "TEMPLAR Cosmetics",
+  "description": "Various cosmetic exploits.\nhttps://discord.gg/myqngze\nFor any questions, comments, concerns contact TheAlphaEpsilon#7015 :)",
+  "version": "2.0",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["TheAlphaEpsilon"],
+  "credits": "The Last Templar for being my first group on 2b2t. (and forgehax devs for their class loader)",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
