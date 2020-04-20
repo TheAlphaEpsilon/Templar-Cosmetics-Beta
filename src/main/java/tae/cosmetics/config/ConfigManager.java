@@ -56,6 +56,14 @@ public class ConfigManager {
 		BaseMod.setBind(3, (key < 0) ? Keyboard.KEY_BACKSLASH : key);
 		key = ConfigHandler.getInt("keybind", "elytra");
 		BaseMod.setBind(4, (key < 0) ? 0 : key);
+		key = ConfigHandler.getInt("keybind", "cancel");
+		BaseMod.setBind(6, (key < 0) ? 0 : key);
+		key = ConfigHandler.getInt("keybind", "track");
+		BaseMod.setBind(7, (key < 0) ? 0 : key);
+		key = ConfigHandler.getInt("keybind", "marker");
+		BaseMod.setBind(8, (key < 0) ? 0 : key);
+		key = ConfigHandler.getInt("keybind", "hover");
+		BaseMod.setBind(9, (key < 0) ? 0 : key);
 		
 		//packet cancel
 		int clientamount = ConfigHandler.getInt("packetcancelamount", "client");
@@ -123,7 +131,11 @@ public class ConfigManager {
 		ConfigHandler.writeInt("keybind", "timestampmod", BaseMod.getKey(2));	
 		ConfigHandler.writeInt("keybind", "homegui", BaseMod.getKey(3));
 		ConfigHandler.writeInt("keybind", "elytra", BaseMod.getKey(4));
-				
+		ConfigHandler.writeInt("keybind", "cancel", BaseMod.getKey(6));
+		ConfigHandler.writeInt("keybind", "track", BaseMod.getKey(7));
+		ConfigHandler.writeInt("keybind", "marker", BaseMod.getKey(8));
+		ConfigHandler.writeInt("keybind", "hover", BaseMod.getKey(9));
+
 		//packetcancel
 		
 		counter = 0;

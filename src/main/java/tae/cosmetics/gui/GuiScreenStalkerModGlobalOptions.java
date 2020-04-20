@@ -62,7 +62,7 @@ public class GuiScreenStalkerModGlobalOptions extends AbstractTAEGuiScreen {
 
 			@Override
 			public String getText(int id, String name, float value) {
-				return null;
+				return "";
 			}
 			
 		});

@@ -9,7 +9,7 @@ import tae.packetevent.PacketEvent;
 
 public class ChatHighlightMod extends BaseMod {
 
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void getChatEvent(PacketEvent.Incoming event) {
 		if(event.getPacket() instanceof SPacketChat) {			
 			SPacketChat packet = (SPacketChat) event.getPacket();
@@ -21,7 +21,7 @@ public class ChatHighlightMod extends BaseMod {
 				String format = PlayerAlert.prefix(uuid);
 				if(brokentext[0].toLowerCase().contains(name.toLowerCase()) && !format.isEmpty()) {
 									
-					event.setPacket(new SPacketChat(new TextComponentString(format+text)));
+					event.setPacket(new SPacketChat(new TextComponentString(format+text), packet.getType()));
 					
 					break;
 				}
