@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 
-version = "3.0"
+version = "public-20-APRIL-2020"
 group = "tae.cosmetics"
 archivesBaseName = "templarcosmetics"
 

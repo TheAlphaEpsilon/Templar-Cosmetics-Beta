@@ -20,6 +20,7 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -91,19 +92,23 @@ public class HoverMapAndBook extends BaseMod {
 		Gui.drawRect(x - 1, y - 1, x + 129, y + 129, Color.BLACK.getRGB());
 		Gui.drawRect(x, y, x + 128, y + 128, backgroundColor);
 		
-		byte[] colors = map.getMapData(mapStack, Minecraft.getMinecraft().world).colors;
+		MapData data = map.getMapData(mapStack, Minecraft.getMinecraft().world);
 		
-		for (int i = 0; i < colors.length; ++i) {
+		if(data != null) {
+			byte[] colors = data.colors;
 			
-            int j = colors[i] & 255;
+			for (int i = 0; i < colors.length; ++i) {
+				
+	            int j = colors[i] & 255;
 
-            if (j / 4 == 0) {
-                drawPixel(i % 128 + x, i / 128 + y, (i + i / 128 & 1) * 8 + 16 << 24);
-            }
-            else {
-                drawPixel(i % 128 + x, i / 128 + y, MapColor.COLORS[j / 4].getMapColor(j & 3));
-            }
-        }
+	            if (j / 4 == 0) {
+	                drawPixel(i % 128 + x, i / 128 + y, (i + i / 128 & 1) * 8 + 16 << 24);
+	            }
+	            else {
+	                drawPixel(i % 128 + x, i / 128 + y, MapColor.COLORS[j / 4].getMapColor(j & 3));
+	            }
+	        }
+		}
 		
 		GlStateManager.scale(scale, scale, scale);
 		
@@ -148,7 +153,8 @@ public class HoverMapAndBook extends BaseMod {
 			
 			if(fontRenderer.getStringWidth(title) > width) {
 				width = fontRenderer.getStringWidth(title);
-			} else if(fontRenderer.getStringWidth("By: " + author) > width) {
+			}
+			if(fontRenderer.getStringWidth("By: " + author) > width) {
 				width = fontRenderer.getStringWidth("By: " + author);
 			}
 			

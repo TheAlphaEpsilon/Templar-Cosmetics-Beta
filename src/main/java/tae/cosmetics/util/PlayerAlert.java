@@ -100,7 +100,7 @@ public class PlayerAlert implements Globals{
 					
 					if(player.assumePrio && player.totalQueueOnJoin > 0 && player.prioQueueOnJoin > 0) {
 						
-						int toTest = player.prioQueueOnJoin - (player.totalQueueOnJoin - currentQueuePos) + /* formula */((player.prioQueueOnJoin / (player.totalQueueOnJoin / 10)) * 20);
+						int toTest = player.prioQueueOnJoin - (player.totalQueueOnJoin - currentQueuePos);
 						
 						//Smoothing out times and not letting q pos go neg
 						if(toTest <= 10) {
