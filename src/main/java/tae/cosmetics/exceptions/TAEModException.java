@@ -3,6 +3,7 @@ package tae.cosmetics.exceptions;
 import tae.cosmetics.ColorCode;
 import tae.cosmetics.Globals;
 import tae.cosmetics.OnLogin;
+import tae.cosmetics.util.PlayerUtils;
 
 public class TAEModException extends Exception implements Globals {
 
@@ -34,7 +35,7 @@ public class TAEModException extends Exception implements Globals {
 	}
 	
 	public void post() {
-		sendMessage("Error: Class " + mod.toString() + " : " + message,ColorCode.RED);
+		PlayerUtils.sendMessage("Error: Class " + mod.toString() + " : " + message,ColorCode.RED);
 	}
 	
 }

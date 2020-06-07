@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.exceptions.TAEModException;
 import tae.cosmetics.mods.BaseMod;
 import tae.cosmetics.util.PlayerAlert;
+import tae.cosmetics.util.PlayerUtils;
 import tae.packetevent.PacketEvent;
 
 public class OnLogin implements Globals {
@@ -54,8 +55,8 @@ public class OnLogin implements Globals {
 			
 			if(sendHelp && firstJoin) {
 				firstJoin = false;
-				sendMessage("Thank you for using TEMPLAR cosmetics pack!",ColorCode.GREEN,ColorCode.ITALIC, ColorCode.BOLD);
-				sendMessage("Press " + Keyboard.getKeyName(BaseMod.getKey(3)) + " to open the gui",ColorCode.GREEN,ColorCode.ITALIC);
+				PlayerUtils.sendMessage("Thank you for using TEMPLAR cosmetics pack!",ColorCode.GREEN,ColorCode.ITALIC, ColorCode.BOLD);
+				PlayerUtils.sendMessage("Press " + Keyboard.getKeyName(BaseMod.getKey(3)) + " to open the gui",ColorCode.GREEN,ColorCode.ITALIC);
 			}
 			
 			for(TAEModException exception : exceptions) {

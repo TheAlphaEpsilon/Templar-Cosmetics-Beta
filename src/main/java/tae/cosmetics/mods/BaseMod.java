@@ -10,12 +10,14 @@ import net.minecraft.network.play.client.CPacketEntityAction.Action;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
+import tae.cosmetics.ColorCode;
 import tae.cosmetics.Globals;
 import tae.cosmetics.gui.GuiBookTitleMod;
 import tae.cosmetics.gui.GuiHome;
 import tae.cosmetics.gui.GuiScreenStalkerMod;
 import tae.cosmetics.gui.GuiTimestampMod;
 import tae.cosmetics.gui.util.packet.TimestampModule;
+import tae.cosmetics.util.PlayerUtils;
 
 public class BaseMod implements Globals {
 	
@@ -98,6 +100,10 @@ public class BaseMod implements Globals {
 	
 	public static int getKey(int index) {
 		return keyBindings[index].getKeyCode();
+	}
+	
+	protected void sendMessage(String message, ColorCode... codes) {
+		PlayerUtils.sendMessage(message, codes);
 	}
 	
 }

@@ -21,13 +21,12 @@ public class GuiHome extends GuiScreen {
 	private GuiButton openStalkerMod;
 	private GuiButton openTimeStampMod;
 	private GuiButton open2b2tcp;
+	private GuiButton openMisc;
 	
 	private GuiSetKeybind bookModKey = null;
 	private GuiSetKeybind stalkerModKey = null;
 	private GuiSetKeybind timestampModKey = null;
 	private GuiSetKeybind home = null;
-	private GuiSetKeybind elytra = null;
-	private GuiSetKeybind hover = null;
 		
 	private static final int xOffset = 80;
 	private static final int yOffset = 0;
@@ -39,6 +38,7 @@ public class GuiHome extends GuiScreen {
 		openStalkerMod = new GuiButton(1, 0, 0, 150, 20, "Open Stalker Mod GUI");
 		openTimeStampMod = new GuiButton(2, 0, 0, 150, 20, "Open Timestamp Mod GUI");
 		open2b2tcp = new GuiButton(3, 0, 0, 150, 20, "2b2tcpdump");
+		openMisc = new GuiButton(4, 0, 0, 150, 20, "Misc");
 	}
 	
 	public static GuiHome instance() {
@@ -56,6 +56,7 @@ public class GuiHome extends GuiScreen {
 		buttonList.add(openStalkerMod);
 		buttonList.add(openTimeStampMod);
 		buttonList.add(open2b2tcp);
+		buttonList.add(openMisc);
 				
 		if(bookModKey == null ) {        	
         	
@@ -95,23 +96,6 @@ public class GuiHome extends GuiScreen {
         	home.setMaxStringLength(32);
         
 		}
-		
-		if(elytra == null) {
-			elytra = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, BaseMod.getKey(4));
-        	elytra.setTextColor(-1);
-        	elytra.setDisabledTextColour(-1);
-        	elytra.setEnableBackgroundDrawing(true);
-        	elytra.setMaxStringLength(32);
-        
-		}
-		
-		if(hover == null) {
-			hover = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, BaseMod.getKey(9));
-        	hover.setTextColor(-1);
-        	hover.setDisabledTextColour(-1);
-        	hover.setEnableBackgroundDrawing(true);
-        	hover.setMaxStringLength(32);
-		}
 		    	
 	}
 	
@@ -127,10 +111,6 @@ public class GuiHome extends GuiScreen {
 		BaseMod.setBind(2, timestampModKey.getKeyCode());
 		
 		BaseMod.setBind(3, home.getKeyCode());
-		
-		BaseMod.setBind(4, elytra.getKeyCode());
-		
-		BaseMod.setBind(9, hover.getKeyCode());
 				
 		mc.gameSettings.saveOptions();
 		
@@ -154,6 +134,10 @@ public class GuiHome extends GuiScreen {
 			mc.addScheduledTask(() -> {
 				mc.displayGuiScreen(Gui2b2tcp.instance());
 			});
+		} else if(button == openMisc) {
+			mc.addScheduledTask(() -> {
+				mc.displayGuiScreen(new GuiMisc(this));
+			});
 		}
 	}
 	
@@ -166,10 +150,6 @@ public class GuiHome extends GuiScreen {
         } else if (timestampModKey.textboxKeyTyped(typedChar, keyCode)) {
 			
         } else if (home.textboxKeyTyped(typedChar, keyCode)) {
-        
-        } else if (elytra.textboxKeyTyped(typedChar, keyCode)) {
-        	
-        } else if (hover.textboxKeyTyped(typedChar, keyCode)) {
         
         } else {	
        
@@ -191,11 +171,7 @@ public class GuiHome extends GuiScreen {
 			
 		} else if(home.mouseClicked(mouseX, mouseY, mouseButton)) {
 			
-		} else if(elytra.mouseClicked(mouseX, mouseY, mouseButton)) {
-			
-		} else if(hover.mouseClicked(mouseX, mouseY, mouseButton)) {
-			
-		}
+		} 
 		
 		//TODO: rest of text boxes
 		
@@ -221,18 +197,12 @@ public class GuiHome extends GuiScreen {
 		stalkerModKey.drawTextBox();
 		timestampModKey.drawTextBox();
 		home.drawTextBox();
-		elytra.drawTextBox();
-		hover.drawTextBox();
 		
 		this.drawString(fontRenderer, "Open GUI", i - 180, j - 82, Color.WHITE.getRGB());
 		this.drawString(fontRenderer, "Keybinds", i - 10, j - 82, Color.WHITE.getRGB());
 		
-		this.drawString(fontRenderer, "Keybind for this screen", i - 180, j + 30, Color.WHITE.getRGB());
-		
-		this.drawString(fontRenderer, "MISC", i - 180, j + 50, Color.WHITE.getRGB());
-		this.drawString(fontRenderer, "Send elytra packet", i - 180, j + 64, Color.WHITE.getRGB());
-		this.drawString(fontRenderer, "View maps and books", i - 180, j + 78, Color.WHITE.getRGB());
-		
+		this.drawString(fontRenderer, "Keybind for this screen", i - 180, j + 54, Color.WHITE.getRGB());
+				
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		
 	}
@@ -256,6 +226,9 @@ public class GuiHome extends GuiScreen {
 		open2b2tcp.x = x - 180;
 		open2b2tcp.y = y + 2;
 		
+		openMisc.x = x - 180;
+		openMisc.y = y + 26;
+		
 		bookModKey.x = x - 10;
 		bookModKey.y = y - 67;
 		
@@ -266,13 +239,7 @@ public class GuiHome extends GuiScreen {
 		timestampModKey.y = y - 19;
 		
 		home.x = x - 10;
-		home.y = y + 30;
-		
-		elytra.x = x - 10;
-		elytra.y = y + 64;
-		
-		hover.x = x - 10;
-		hover.y = y + 78;
+		home.y = y + 54;
 		
 	}
 	

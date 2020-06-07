@@ -20,8 +20,14 @@ public class API2b2tdev implements Globals {
 	
 	private static int priosize = -1;
 	
+	private static int normsize = -1;
+	
 	public static int getPrioSize() {
 		return priosize;
+	}
+	
+	public static int getNormSize() {
+		return normsize;
 	}
 	
 	public static void update() {
@@ -30,10 +36,24 @@ public class API2b2tdev implements Globals {
 		//I have no idea what I'm doing
 		
 		
-		String data = getDataFrom(prioqueue);	
+		String priodata = getDataFrom(prioqueue);	
 		
-		if(data != null) {
-			priosize = Integer.parseInt(data.split(",")[1]);
+		if(priodata != null) {
+			try{
+				priosize = Integer.parseInt(priodata.split(",")[1]);
+			} catch (Exception e) {
+				 new TAEModException(API2b2tdev.class, "Prio: " + priodata).post();
+			}
+		}
+		
+		String normdata = getDataFrom("https://2b2t.io/api/queue?last=true");
+		
+		if(normdata != null) {
+			try{
+				normsize = Integer.parseInt(normdata.replace("[", "").replace("]", "").split(",")[1]);
+			} catch (Exception e) {
+				 new TAEModException(API2b2tdev.class, "Norm: " + normdata).post();
+			}
 		}
 		
 	}
@@ -54,16 +74,22 @@ public class API2b2tdev implements Globals {
 		
 		long diff = Instant.now().getEpochSecond() - epoch;
 		
-		if(diff < 120) {
-			return RebaneGetter.getSize();
+		long rawhours = diff / 3600;
+		
+		int decimal = (int) (rawhours - (int) rawhours);
+		
+		if(decimal < 33) {
+			return dataFromHour(getDataFrom(source + Math.floor(rawhours) +"h"), epoch);
+		} else if(decimal >= 33 && decimal <= 66) {
+			return (dataFromHour(getDataFrom(source + Math.floor(rawhours) +"h"), epoch) + dataFromHour(getDataFrom(source + Math.floor(rawhours) +"h"), epoch)) / 2;
+		} else {
+			return dataFromHour(getDataFrom(source + Math.ceil(rawhours) +"h"), epoch);
 		}
+				
 		
-		int hours = (int) (diff / 3600);
-		
-		hours = hours < 0 ? 1 : hours;
-		
-		String data = getDataFrom(source + hours +"h");
-		
+	}
+	
+	private static long dataFromHour(String data, long rawEpoch) {
 		JSONParser parser = new JSONParser();
 
 		try {
@@ -83,7 +109,7 @@ public class API2b2tdev implements Globals {
 					
 					long newLong = (Long)sub.get(0);
 					
-					if(Math.abs(epoch - closest) > Math.abs(epoch - newLong)) {
+					if(Math.abs(rawEpoch - closest) > Math.abs(rawEpoch - newLong)) {
 						closest = newLong;
 						index = i;
 					}

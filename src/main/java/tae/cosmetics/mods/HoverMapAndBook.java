@@ -37,6 +37,8 @@ public class HoverMapAndBook extends BaseMod {
 
 	private BookRenderer toRender = null;
 	
+	private boolean keyWasDown = false;
+	
 	//Cancel normal tooltips
 	@SubscribeEvent
 	public void onHover(RenderTooltipEvent.Pre event) {
@@ -53,6 +55,7 @@ public class HoverMapAndBook extends BaseMod {
 	@SubscribeEvent
 	public void drawNewGui(GuiScreenEvent.DrawScreenEvent.Post event) {
 		if(!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer) || Minecraft.getMinecraft().currentScreen instanceof GuiBookTitleMod || !Keyboard.isKeyDown(BaseMod.getHoverKey())) {
+			keyWasDown = false;
 			return;
 		}
 		
@@ -65,6 +68,13 @@ public class HoverMapAndBook extends BaseMod {
 		if(hovered != null) {
 			
 			Item item = hovered.getStack().getItem();
+			
+			NBTTagCompound nbt = hovered.getStack().getTagCompound();
+			
+			if(nbt != null && !keyWasDown) {
+				keyWasDown = true;
+				sendMessage(nbt.toString());
+			}
 			
 			if(item instanceof ItemMap) {
 				drawMap((ItemStack)hovered.getStack(), (ItemMap)item, event.getMouseX(), event.getMouseY());

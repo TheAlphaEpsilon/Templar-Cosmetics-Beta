@@ -1,5 +1,6 @@
 package tae.cosmetics.util;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.minecraft.util.text.TextComponentString;
+import tae.cosmetics.ColorCode;
 import tae.cosmetics.Globals;
 
 public class PlayerAlert implements Globals{
@@ -64,132 +66,88 @@ public class PlayerAlert implements Globals{
 	}
 	
 	public static void updateQueuePositions() {
-		ArrayList<String> uuidArray = RebaneGetter.getUUIDs();
+		
+		ArrayList<String> queueUUIDS = RebaneGetter.getUUIDs();
+		
 		for(String uuid : playeruuidmap.keySet()) {
 			
-			//name is in queue cache
-			if(uuidArray.contains(uuid)) {
+			PlayerData data = playeruuidmap.get(uuid);
+			
+			if(queueUUIDS.contains(uuid)) { //If that uuid is in rebane's site
 				
-				//player isnt online
-				PlayerData player;
-				if(!((player = playeruuidmap.get(uuid)).inGame)) {
+				//depreciated
+				 /* if(data.initQueueState) { //If was online on boot
 					
-					//set queue pos
-					int currentQueuePos = uuidArray.indexOf(uuid) + 1;
-					
-					if(player.epochJoined < 0) {
-						player.epochJoined = RebaneGetter.getWhenJoined(uuid);
+					if(data.epochJoined == -1) {
+						data.epochJoined = RebaneGetter.getWhenJoined(uuid);
 					}
 					
-					if(player.totalQueueOnJoin < 0 || player.queuePos < 1) {
-						if(player.epochJoined > 0) {
-							player.totalQueueOnJoin = API2b2tdev.normQueueFromEpoch(player.epochJoined);
-						} else {
-							player.totalQueueOnJoin = RebaneGetter.getSize();
-						}
-						
+					if(data.epochJoined != -1 && data.prioQueueOnJoin == -1) {
+						data.prioQueueOnJoin = API2b2tdev.prioQueueFromEpoch(data.epochJoined);
 					}
 					
-					if(player.prioQueueOnJoin < 0 || player.queuePos < 1) {
-						if(player.epochJoined > 0) {
-							player.prioQueueOnJoin = API2b2tdev.prioQueueFromEpoch(player.epochJoined);
-						} else {
-							player.prioQueueOnJoin = API2b2tdev.getPrioSize();
-						}
+					if(data.epochJoined != -1 && data.totalQueueOnJoin == -1) {
+						data.totalQueueOnJoin = API2b2tdev.normQueueFromEpoch(data.epochJoined);
 					}
 					
-					if(player.assumePrio && player.totalQueueOnJoin > 0 && player.prioQueueOnJoin > 0) {
-						
-						int toTest = player.prioQueueOnJoin - (player.totalQueueOnJoin - currentQueuePos);
-						
-						//Smoothing out times and not letting q pos go neg
-						if(toTest <= 10) {
-														
-							toTest = (int) Math.ceil((10 * Math.exp(0.25D * (toTest - 10))));
-							
-						}
-						
-						player.queuePos = toTest;//(toTest < 1) ? currentQueuePos : toTest;
-						
+					if(data.assumePrio) {
+						data.queuePos = data.prioQueueOnJoin - (data.totalQueueOnJoin - RebaneGetter.getUUIDs().indexOf(uuid) + 1);
 					} else {
-						
-						player.queuePos = currentQueuePos;
-						
+						data.queuePos = data.totalQueueOnJoin - RebaneGetter.getUUIDs().indexOf(uuid) + 1;
 					}
 					
-					//Once on in q
-					if(player.queue && !player.sentInQueue) {
-						
-						player.sentInQueue = true;
-						
-						player.sentLeftQueue = false;
-						
-						player.wasInQueue = true;
-						
-						String toSend = colorcode+"6Player " + playeruuidmap.get(uuid).oldname + " is in queue "+colorcode+"l[" + player.queuePos +"]"; //" + player.totalQueueOnJoin + " " + player.prioQueueOnJoin;
-						if(mc.player != null) {
-							mc.player.sendMessage(new TextComponentString(toSend));
-						}
-						
+				} else { //Only join q once user in game
+					
+					if(data.epochJoined == -1) {
+						data.epochJoined = Instant.now().getEpochSecond();
 					}
 					
-				//player is online	
+					if(data.prioQueueOnJoin == -1) {
+						data.prioQueueOnJoin = API2b2tdev.getPrioSize();
+					}
+					
+					if(data.totalQueueOnJoin == -1) {
+						data.totalQueueOnJoin = API2b2tdev.normQueueFromEpoch(data.epochJoined);
+					}
+					
+					if(data.assumePrio) {
+						data.queuePos = ((RebaneGetter.getUUIDs().indexOf(uuid) + 1) * API2b2tdev.getPrioSize()) / RebaneGetter.getSize();
+					} else {
+						data.queuePos = ((RebaneGetter.getUUIDs().indexOf(uuid) + 1) * API2b2tdev.normQueueFromEpoch(Instant.now().getEpochSecond()) ) / RebaneGetter.getSize();
+					}
+					
+				} */
+				
+				if(data.assumePrio) {
+					data.queuePos = ((RebaneGetter.getUUIDs().indexOf(uuid) + 1) * API2b2tdev.getPrioSize()) / RebaneGetter.getUUIDs().size();
 				} else {
-					
-					if(player.queuePos > 0) {
-						int posPast = player.totalQueueOnJoin - player.queuePos;
-						
-						//TODO: get prio to normal ratio
-						
-					}
-										
-					if(!player.sentLeftQueue && player.wasInQueue) {
-						
-						player.wasInQueue = false;
-						
-						player.sentLeftQueue = true;
-						
-						String toSend = colorcode+"6Player " + playeruuidmap.get(uuid).oldname + " has left the queue." + player.queuePos;
-						if(mc.player != null && player.queue && !(player.inGame && player.alert)) {
-							mc.player.sendMessage(new TextComponentString(toSend));
-						}
-						
-					}
-					
-					player.queuePos = -1;
-					
+					data.queuePos = ((RebaneGetter.getUUIDs().indexOf(uuid) + 1) * RebaneGetter.getSize()) / RebaneGetter.getUUIDs().size();
 				}
 				
-			//name isnt in queue		
-			} else {
-				
-				PlayerData player = playeruuidmap.get(uuid);
-				
-				player.epochJoined = -1;
-				
-				if(player.queuePos > 0) {
-					int posPast = player.totalQueueOnJoin - player.queuePos;
-				
-					//TODO: get prio to normal ratio
-					
-				}
-								
-				player.sentInQueue = false;
-				
-				if(!player.sentLeftQueue && player.wasInQueue) {
-					
-					player.wasInQueue = false;
-					
-					player.sentLeftQueue = true;
-					
-					String toSend = colorcode+"6Player " + playeruuidmap.get(uuid).oldname + " has left the queue.";
-					if(mc.player != null && player.queue && !(player.inGame && player.alert)) {
-						mc.player.sendMessage(new TextComponentString(toSend));
-					}
-					
+				if(!data.sentInQueue) {
+					PlayerUtils.sendMessage(String.format(getMessage(uuid), "joined the queue. [" + data.queuePos + "]"), ColorCode.GOLD);
+					data.sentInQueue = true;
 				}
 				
-				player.queuePos = -1;
+				if(data.inGame) { //Player is online
+					data.queuePos = -1;
+				}
+				
+				data.wasInQueue = true;
+				data.sentLeftQueue = false;
+				
+			} else { //uuid isnt in rebane's site
+				
+				data.queuePos = -1;
+				
+				data.sentInQueue = false;
+				
+				if(!data.inGame && !data.sentLeftQueue && data.wasInQueue) {
+					PlayerUtils.sendMessage(String.format(getMessage(uuid), "left the queue."), ColorCode.GOLD);
+					data.sentLeftQueue = true;
+				}
+				
+				data.wasInQueue = false;
 				
 			}
 			
@@ -327,9 +285,6 @@ public class PlayerAlert implements Globals{
 		private boolean wasInQueue;
 		private boolean assumePrio;
 		private int queuePos;
-		private int totalQueueOnJoin;
-		private int prioQueueOnJoin;
-		private long epochJoined = -1;
 		
 		private PlayerData(String uuid, String oldname) {
 			this(uuid, oldname, "", true, true, false);
@@ -345,8 +300,6 @@ public class PlayerAlert implements Globals{
 			sentLeftQueue = false;
 			wasInQueue = false;
 			queuePos = -1;
-			totalQueueOnJoin = -1;
-			prioQueueOnJoin = -1;
 			this.alert = alert;
 			this.queue = queue;
 			this.assumePrio = assumePrio;

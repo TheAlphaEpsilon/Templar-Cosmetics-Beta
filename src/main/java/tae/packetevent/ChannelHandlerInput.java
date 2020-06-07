@@ -12,6 +12,8 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
+import tae.cosmetics.OnLogin;
+import tae.cosmetics.exceptions.TAEModException;
 
 public class ChannelHandlerInput {
 	
@@ -28,7 +30,11 @@ public class ChannelHandlerInput {
 			
 			ChannelPipeline pipeline = event.getManager().channel().pipeline();
 						
-			pipeline.addBefore("packet_handler","listener", new PacketListener());
+			try {
+				pipeline.addBefore("packet_handler","listener", new PacketListener());
+			} catch (Exception e) {
+				new TAEModException(ChannelHandlerInput.class, e.getClass() + ": " + e.getMessage()).post();
+			}
 			
 		}
 	}

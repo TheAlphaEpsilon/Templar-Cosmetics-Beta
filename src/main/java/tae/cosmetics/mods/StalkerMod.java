@@ -31,7 +31,7 @@ public class StalkerMod extends BaseMod {
 				for(String uuid : PlayerAlert.getUUIDs()) {
 					String name = PlayerAlert.oldName(uuid);
 					if(s.equals(name)) {
-							PlayerAlert.toggleOnline(uuid, true);
+						PlayerAlert.toggleOnline(uuid, true);
 						break;
 					}
 				}

@@ -25,32 +25,6 @@ public interface Globals {
 	public static String modPath = "tae.cosmetics.mods.*";
 	
 	public static String configPath = "config/taescosmeticsv2.cfg";
-		
-	default void sendMessage(String message, ColorCode... code) {
-		if(mc.player == null) return;
-		if(message == null) return;
-		
-		Set<ColorCode> codes = new HashSet<ColorCode>();
-		for(ColorCode in : code) {
-			codes.add(in);
-		}
-		
-		String format = organizeColorCodes(codes);
-		
-		mc.player.sendMessage(new TextComponentString(format+message));
-	}
-	
-	default String organizeColorCodes(Set<ColorCode> codes) {
-		String format = "";
-		String color = "";
-		
-		for(ColorCode in : codes) {
-			if(in.getType() == 0) color += in.getCode();
-			else format += in.getCode();
-		}
-		
-		return color+format;
-	}
 	
 	default Set<ColorCode> stringToCode(String[] possiblecolors) {
 		
