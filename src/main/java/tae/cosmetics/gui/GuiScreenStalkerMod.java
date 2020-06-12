@@ -297,7 +297,12 @@ public class GuiScreenStalkerMod extends AbstractTAEGuiScreen {
 						
 					if(yoffset + 8 < j + 97) {
 						this.drawString(fontRenderer, "Queue:", i - 85 + (x * 115), yoffset + 8, Color.WHITE.getRGB());
-						this.drawString(fontRenderer, (PlayerAlert.queuePos(thisUUID)==-1)?"N/A":""+PlayerAlert.queuePos(thisUUID), i - 50 + (x * 115), yoffset + 8, Color.WHITE.getRGB());
+						if(PlayerAlert.prioOutOfBounds(thisUUID)) {
+							this.drawString(fontRenderer, "Joining", i - 50 + (x * 115), yoffset + 8, Color.WHITE.getRGB());
+						} else {
+							this.drawString(fontRenderer, (PlayerAlert.queuePos(thisUUID)==-1)?"N/A":""+PlayerAlert.queuePos(thisUUID), i - 50 + (x * 115), yoffset + 8, Color.WHITE.getRGB());
+						}
+						
 					}
 					
 				}

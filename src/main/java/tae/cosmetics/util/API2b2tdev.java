@@ -12,6 +12,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import tae.cosmetics.Globals;
 import tae.cosmetics.exceptions.TAEModException;
@@ -60,39 +61,24 @@ public class API2b2tdev implements Globals {
 	
 	public static int prioQueueFromEpoch(long epoch) {
 		
-		return (int)getQueueData("https://2b2t.io/api/prioqueue?range=", epoch);
+		return (int)getQueueData("https://2b2t.io/api/prioqueue?range=24h", epoch);
 		
 	}
 	
 	public static int normQueueFromEpoch(long epoch) {
 		
-		return (int)getQueueData("https://2b2t.io/api/queue?range=", epoch);
+		return (int)getQueueData("https://2b2t.io/api/queue?range=24h", epoch);
 		
 	}
 	
 	private static long getQueueData(String source, long epoch) {
-		
-		long diff = Instant.now().getEpochSecond() - epoch;
-		
-		long rawhours = diff / 3600;
-		
-		int decimal = (int) (rawhours - (int) rawhours);
-		
-		if(decimal < 33) {
-			return dataFromHour(getDataFrom(source + Math.floor(rawhours) +"h"), epoch);
-		} else if(decimal >= 33 && decimal <= 66) {
-			return (dataFromHour(getDataFrom(source + Math.floor(rawhours) +"h"), epoch) + dataFromHour(getDataFrom(source + Math.floor(rawhours) +"h"), epoch)) / 2;
-		} else {
-			return dataFromHour(getDataFrom(source + Math.ceil(rawhours) +"h"), epoch);
-		}
-				
-		
-	}
-	
-	private static long dataFromHour(String data, long rawEpoch) {
+			
 		JSONParser parser = new JSONParser();
 
 		try {
+			
+			String data = getDataFrom(source);
+						
 			JSONArray sizes = (JSONArray) parser.parse(data);
 			
 			long closest = -1;
@@ -109,7 +95,7 @@ public class API2b2tdev implements Globals {
 					
 					long newLong = (Long)sub.get(0);
 					
-					if(Math.abs(rawEpoch - closest) > Math.abs(rawEpoch - newLong)) {
+					if(Math.abs(epoch - closest) > Math.abs(epoch - newLong)) {
 						closest = newLong;
 						index = i;
 					}
@@ -118,13 +104,16 @@ public class API2b2tdev implements Globals {
 				
 			}
 			
+			PlayerUtils.sendMessage(((JSONArray) sizes.get(index)).get(1).toString());
+			
 			return (Long)((JSONArray)sizes.get(index)).get(1);
 			
-		} catch (Exception e) {
-		    new TAEModException(e.getClass(), e.getMessage()).post();
-		    new TAEModException(API2b2tdev.class, "Cannot connect to 2b2t.io; queue data may be inaccurate or unavaliable.").post();
-			return - 1;
+		} catch (ParseException e) {
+			 new TAEModException(e.getClass(), e.getMessage()).post();
+			 new TAEModException(API2b2tdev.class, "Cannot connect to 2b2t.io; queue data may be inaccurate or unavaliable.").post();
+			 return - 1;
 		}
+		
 	}
 	
 	private static String getDataFrom(String url) {

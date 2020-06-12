@@ -75,53 +75,77 @@ public class PlayerAlert implements Globals{
 			
 			if(queueUUIDS.contains(uuid)) { //If that uuid is in rebane's site
 				
-				//depreciated
-				 /* if(data.initQueueState) { //If was online on boot
+				data.epochJoined = RebaneGetter.getWhenJoined(uuid);
+				
+				if(data.inQueueOnBoot) {//Was in queue before player joined
 					
 					if(data.epochJoined == -1) {
-						data.epochJoined = RebaneGetter.getWhenJoined(uuid);
-					}
-					
-					if(data.epochJoined != -1 && data.prioQueueOnJoin == -1) {
-						data.prioQueueOnJoin = API2b2tdev.prioQueueFromEpoch(data.epochJoined);
-					}
-					
-					if(data.epochJoined != -1 && data.totalQueueOnJoin == -1) {
-						data.totalQueueOnJoin = API2b2tdev.normQueueFromEpoch(data.epochJoined);
-					}
-					
-					if(data.assumePrio) {
-						data.queuePos = data.prioQueueOnJoin - (data.totalQueueOnJoin - RebaneGetter.getUUIDs().indexOf(uuid) + 1);
+						
+						if(data.prioQueueOnJoin == -1) {
+							data.prioQueueOnJoin = API2b2tdev.getPrioSize();
+						}
+						if(data.normQueueOnJoin == -1) {
+							data.normQueueOnJoin = API2b2tdev.getNormSize();
+						}
+						if(data.rebaneQueueOnJoin == -1) {
+							data.rebaneQueueOnJoin = RebaneGetter.getUUIDs().size();
+						}
+						
 					} else {
-						data.queuePos = data.totalQueueOnJoin - RebaneGetter.getUUIDs().indexOf(uuid) + 1;
+						
+						int prioQueue = API2b2tdev.prioQueueFromEpoch(data.epochJoined);
+						if(data.prioQueueOnJoin == -1) {
+							if(prioQueue == -1) {
+								data.prioQueueOnJoin = API2b2tdev.getPrioSize();
+							} else {
+								data.prioQueueOnJoin = prioQueue;
+							}
+						}
+						
+						int normQueue = API2b2tdev.normQueueFromEpoch(data.epochJoined);
+						if(data.normQueueOnJoin == -1) {
+							if(normQueue == -1) {
+								data.normQueueOnJoin = API2b2tdev.getNormSize();
+							} else {
+								data.normQueueOnJoin = normQueue;
+							}
+						}
+						
+						if(data.rebaneQueueOnJoin == -1) {
+							if(normQueue == -1 || prioQueue == -1) {
+								data.rebaneQueueOnJoin = RebaneGetter.getUUIDs().size();
+							} else {
+								data.rebaneQueueOnJoin = data.prioQueueOnJoin + data.normQueueOnJoin;
+							}
+						}
+						
 					}
 					
-				} else { //Only join q once user in game
-					
-					if(data.epochJoined == -1) {
-						data.epochJoined = Instant.now().getEpochSecond();
-					}
-					
+				} else {
 					if(data.prioQueueOnJoin == -1) {
 						data.prioQueueOnJoin = API2b2tdev.getPrioSize();
 					}
-					
-					if(data.totalQueueOnJoin == -1) {
-						data.totalQueueOnJoin = API2b2tdev.normQueueFromEpoch(data.epochJoined);
+					if(data.normQueueOnJoin == -1) {
+						data.normQueueOnJoin = API2b2tdev.getNormSize();
 					}
-					
-					if(data.assumePrio) {
-						data.queuePos = ((RebaneGetter.getUUIDs().indexOf(uuid) + 1) * API2b2tdev.getPrioSize()) / RebaneGetter.getSize();
-					} else {
-						data.queuePos = ((RebaneGetter.getUUIDs().indexOf(uuid) + 1) * API2b2tdev.normQueueFromEpoch(Instant.now().getEpochSecond()) ) / RebaneGetter.getSize();
+					if(data.rebaneQueueOnJoin == -1) {
+						data.rebaneQueueOnJoin = RebaneGetter.getUUIDs().size();
 					}
-					
-				} */
+				}
+				
+				data.prioOutOfBounds = false;
 				
 				if(data.assumePrio) {
-					data.queuePos = ((RebaneGetter.getUUIDs().indexOf(uuid) + 1) * API2b2tdev.getPrioSize()) / RebaneGetter.getUUIDs().size();
+					
+					data.queuePos = (int) Math.ceil(((RebaneGetter.getUUIDs().indexOf(uuid) + 1 - bestFitIndex(data.prioQueueOnJoin, data.rebaneQueueOnJoin)) 
+							* data.prioQueueOnJoin) / (float)(data.rebaneQueueOnJoin - bestFitIndex(data.prioQueueOnJoin, data.rebaneQueueOnJoin)));					
+					
+					if(RebaneGetter.getUUIDs().indexOf(uuid) + 1 - bestFitIndex(data.prioQueueOnJoin, data.rebaneQueueOnJoin) < 1) {
+						data.prioOutOfBounds = true;
+					}
+					
 				} else {
-					data.queuePos = ((RebaneGetter.getUUIDs().indexOf(uuid) + 1) * RebaneGetter.getSize()) / RebaneGetter.getUUIDs().size();
+					data.queuePos = (int) Math.ceil(((RebaneGetter.getUUIDs().indexOf(uuid) + 1) * data.normQueueOnJoin) / (float)data.rebaneQueueOnJoin);
 				}
 				
 				if(!data.sentInQueue) {
@@ -131,6 +155,9 @@ public class PlayerAlert implements Globals{
 				
 				if(data.inGame) { //Player is online
 					data.queuePos = -1;
+					data.prioQueueOnJoin = -1;
+					data.normQueueOnJoin = -1;
+					data.rebaneQueueOnJoin = -1;
 				}
 				
 				data.wasInQueue = true;
@@ -138,7 +165,15 @@ public class PlayerAlert implements Globals{
 				
 			} else { //uuid isnt in rebane's site
 				
+				data.inQueueOnBoot = false;
+				
 				data.queuePos = -1;
+				
+				data.prioQueueOnJoin = -1;
+				
+				data.normQueueOnJoin = -1;
+				
+				data.rebaneQueueOnJoin = -1;
 				
 				data.sentInQueue = false;
 				
@@ -152,6 +187,10 @@ public class PlayerAlert implements Globals{
 			}
 			
 		}
+	}
+	
+	private static double bestFitIndex(double prioQueueOnJoin, double rebaneQueueOnJoin) {
+		return rebaneQueueOnJoin - 2.378 * prioQueueOnJoin;
 	}
 	
 	public static void updateSendAlert(String uuid, boolean bool) {
@@ -220,6 +259,16 @@ public class PlayerAlert implements Globals{
 		return playeruuidmap.get(uuid).queuePos;
 	}
 	
+	public static boolean prioOutOfBounds(String uuid) {
+		
+		if(!playeruuidmap.containsKey(uuid)) {
+			return false;
+		}
+		
+		return playeruuidmap.get(uuid).prioOutOfBounds;
+		
+	}
+	
 	public static String oldName(String uuid) {
 		
 		if(!playeruuidmap.containsKey(uuid)) {
@@ -284,7 +333,15 @@ public class PlayerAlert implements Globals{
 		private boolean sentLeftQueue;
 		private boolean wasInQueue;
 		private boolean assumePrio;
+		
+		private boolean inQueueOnBoot;
+		private boolean prioOutOfBounds;
+		
 		private int queuePos;
+		private int prioQueueOnJoin;
+		private int normQueueOnJoin;
+		private int rebaneQueueOnJoin;
+		private long epochJoined;
 		
 		private PlayerData(String uuid, String oldname) {
 			this(uuid, oldname, "", true, true, false);
@@ -300,6 +357,11 @@ public class PlayerAlert implements Globals{
 			sentLeftQueue = false;
 			wasInQueue = false;
 			queuePos = -1;
+			prioQueueOnJoin = -1;
+			normQueueOnJoin = -1;
+			rebaneQueueOnJoin = -1;
+			epochJoined = -1;
+			inQueueOnBoot = true;
 			this.alert = alert;
 			this.queue = queue;
 			this.assumePrio = assumePrio;
