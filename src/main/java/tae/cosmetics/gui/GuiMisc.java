@@ -12,6 +12,7 @@ import tae.cosmetics.gui.util.GuiOnOffButton;
 import tae.cosmetics.gui.util.GuiSetKeybind;
 import tae.cosmetics.mods.BaseMod;
 import tae.cosmetics.mods.ChatEncryption;
+import tae.cosmetics.mods.PearlTracking;
 
 public class GuiMisc extends AbstractTAEGuiScreen {
 
@@ -20,6 +21,8 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 	private GuiOnOffButton sendEncrypt;
 	private GuiOnOffButton showEncryptRaw;
 	
+	private GuiOnOffButton pearlLogging;
+	
 	private GuiSetKeybind elytra = null;
 	private GuiSetKeybind hover = null;
 	
@@ -27,6 +30,7 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 		super(parent);
 		sendEncrypt = new GuiOnOffButton(0, 0, 0, 135, 20, "Send Encrypted Chat ", ChatEncryption.enabled);
 		showEncryptRaw = new GuiOnOffButton(0, 0, 0, 135, 20, "Show Raw Text ", ChatEncryption.showRaw);
+		pearlLogging = new GuiOnOffButton(0, 0, 0, 135, 20, "Pearl Logging ", false);
 	}
 
 	@Override
@@ -46,6 +50,7 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 		
 		buttonList.add(sendEncrypt);
 		buttonList.add(showEncryptRaw);
+		buttonList.add(pearlLogging);
 		
 		super.initGui();
 		
@@ -85,6 +90,8 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 				ChatEncryption.enabled = ((GuiOnOffButton) button).getState();
 			} else if(button == showEncryptRaw) {
 				ChatEncryption.showRaw = ((GuiOnOffButton) button).getState();
+			} else if(button == pearlLogging) {
+				PearlTracking.enabled = ((GuiOnOffButton) button).getState();
 			}
 			
 		}
@@ -145,6 +152,9 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 		
 		showEncryptRaw.x = x - 100;
 		showEncryptRaw.y = y - 46;
+		
+		pearlLogging.x = x - 100;
+		pearlLogging.y = y + 10;
 		
 		elytra.x = x + 70;
 		elytra.y = y + 44;

@@ -148,7 +148,7 @@ public class PlayerAlert implements Globals{
 					data.queuePos = (int) Math.ceil(((RebaneGetter.getUUIDs().indexOf(uuid) + 1) * data.normQueueOnJoin) / (float)data.rebaneQueueOnJoin);
 				}
 				
-				if(!data.sentInQueue) {
+				if(!data.sentInQueue && !data.inGame) {
 					PlayerUtils.sendMessage(String.format(getMessage(uuid), "joined the queue. [" + data.queuePos + "]"), ColorCode.GOLD);
 					data.sentInQueue = true;
 				}
@@ -158,6 +158,9 @@ public class PlayerAlert implements Globals{
 					data.prioQueueOnJoin = -1;
 					data.normQueueOnJoin = -1;
 					data.rebaneQueueOnJoin = -1;
+					data.epochJoined = -1;
+					data.prioOutOfBounds = false;
+
 				}
 				
 				data.wasInQueue = true;
@@ -175,7 +178,11 @@ public class PlayerAlert implements Globals{
 				
 				data.rebaneQueueOnJoin = -1;
 				
+				data.epochJoined = -1;
+				
 				data.sentInQueue = false;
+				
+				data.prioOutOfBounds = false;
 				
 				if(!data.inGame && !data.sentLeftQueue && data.wasInQueue) {
 					PlayerUtils.sendMessage(String.format(getMessage(uuid), "left the queue."), ColorCode.GOLD);

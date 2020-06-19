@@ -280,7 +280,7 @@ public class GuiScreenStalkerMod extends AbstractTAEGuiScreen {
 						int type = 0;
 						if(PlayerAlert.inGame(thisUUID)) {
 							type = 0;
-						} else if(PlayerAlert.queuePos(thisUUID) != -1) {
+						} else if(PlayerAlert.queuePos(thisUUID) > 0 || PlayerAlert.prioOutOfBounds(thisUUID)) {
 							type = 2;
 						} else {
 							type = 1;
@@ -300,7 +300,7 @@ public class GuiScreenStalkerMod extends AbstractTAEGuiScreen {
 						if(PlayerAlert.prioOutOfBounds(thisUUID)) {
 							this.drawString(fontRenderer, "Joining", i - 50 + (x * 115), yoffset + 8, Color.WHITE.getRGB());
 						} else {
-							this.drawString(fontRenderer, (PlayerAlert.queuePos(thisUUID)==-1)?"N/A":""+PlayerAlert.queuePos(thisUUID), i - 50 + (x * 115), yoffset + 8, Color.WHITE.getRGB());
+							this.drawString(fontRenderer, (PlayerAlert.queuePos(thisUUID) < 0)?"N/A":""+PlayerAlert.queuePos(thisUUID), i - 50 + (x * 115), yoffset + 8, Color.WHITE.getRGB());
 						}
 						
 					}
@@ -506,8 +506,8 @@ public class GuiScreenStalkerMod extends AbstractTAEGuiScreen {
 			boolean o1InGame = PlayerAlert.inGame(o1);
 			boolean o2InGame = PlayerAlert.inGame(o2);
 			
-			boolean o1InQueue = PlayerAlert.queuePos(o1) != -1 ? true : false;
-			boolean o2InQueue = PlayerAlert.queuePos(o2) != -1 ? true : false;
+			boolean o1InQueue = (PlayerAlert.queuePos(o1) != -1 || PlayerAlert.prioOutOfBounds(o1))? true : false;
+			boolean o2InQueue = (PlayerAlert.queuePos(o2) != -1 || PlayerAlert.prioOutOfBounds(o2))? true : false;
 			
 			int o1Comp = 0;
 			if(!o1InGame) {

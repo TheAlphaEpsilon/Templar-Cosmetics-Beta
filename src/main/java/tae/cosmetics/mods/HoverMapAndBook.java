@@ -2,6 +2,10 @@ package tae.cosmetics.mods;
 
 import java.awt.Color;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.block.material.MapColor;
@@ -20,11 +24,15 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import tae.cosmetics.exceptions.TAEModException;
 import tae.cosmetics.gui.GuiBookTitleMod;
+import tae.cosmetics.util.PlayerUtils;
 
 public class HoverMapAndBook extends BaseMod {
 
@@ -60,6 +68,8 @@ public class HoverMapAndBook extends BaseMod {
 		}
 		
 		GlStateManager.disableDepth();
+		
+		GlStateManager.disableLighting();
 
 		GuiContainer container = (GuiContainer) Minecraft.getMinecraft().currentScreen;
 		
@@ -73,7 +83,9 @@ public class HoverMapAndBook extends BaseMod {
 			
 			if(nbt != null && !keyWasDown) {
 				keyWasDown = true;
-				sendMessage(nbt.toString());
+				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+					sendMessage(nbt.toString());
+				}
 			}
 			
 			if(item instanceof ItemMap) {
@@ -203,9 +215,13 @@ public class HoverMapAndBook extends BaseMod {
 			x *= scale;
 			y *= scale;
 			
+			x -= width / 2;
+			y += height() / 2;
+			
 			drawRect(x, y - height() - padding * 2, x + width + padding * 2, y, backgroundColor);
 			
-			//draw tattering using nbt data as pseudorandom
+			//draw tattering using nbt data as pseudorandom removed due to lag
+			/*
 			for(int i = 0; i < padding * 2 + width; i++) {				
 				int index = 10 * nbtString.charAt(i % nbtString.length());
 				
@@ -229,7 +245,7 @@ public class HoverMapAndBook extends BaseMod {
 				drawHorizontalLine(x, (int) (value2 + x + padding * (1/4f)), y - i - 1, outlineColor);
 				
 			}
-			
+			*/
 			drawHorizontalLine(x + padding, x + padding + width, y - padding - fontRenderer.FONT_HEIGHT * 2 - metaSpace / 2, Color.BLACK.getRGB());
 
 			drawText(x + padding, y - height() - padding);
@@ -277,19 +293,16 @@ public class HoverMapAndBook extends BaseMod {
 			
 			for(int i = 0; i < pages.tagCount(); i++) {
 				
-				NBTTagString index = (NBTTagString)pages.get(i);
-							
-				String raw = index.getString();
-							
-				try {
+				try { //10
 					
-					NBTTagCompound tag = JsonToNBT.getTagFromJson(raw);
-					
-					String text = tag.getString("text");
+					String text = ITextComponent.Serializer.jsonToComponent(pages.getStringTagAt(i)).getUnformattedText();
 					
 					toReturn[i] = text;
 					
-				} catch (NBTException e) {}
+					
+				} catch (Exception e) {
+					PlayerUtils.sendMessage("Page Error");
+				}
 				
 			}
 			

@@ -43,7 +43,7 @@ public class ConfigManager {
 				
 		//queuepeek
 		int minutes = ConfigHandler.getInt("queuepeek", "timer");
-		QueuePeekMod.minutes = (minutes < 0)?10:minutes;
+		QueuePeekMod.minutes = (minutes < 0)?2:minutes;
 		
 		//keybinding
 		int key = ConfigHandler.getInt("keybind", "bookmod");

@@ -12,22 +12,18 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.ColorCode;
 import tae.packetevent.PacketEvent;
 
-/**
- * 
- * unimplemented
- * TODO: implement
- */
+
 public class ChatEncryption extends BaseMod {
 
 	public static boolean enabled = false;
 	
 	public static boolean showRaw = false;
 	
-	private static final char notifier = 0xffff;
+	private static final char notifier = '\\';
 	
-	private static final char preStamp = 0x257f;
+	private static final char preStamp = '!';
 	
-	private static final String stamp = UnicodeKeyboard.toUnicode("Templar Cosmetics", UnicodeKeyboard.TextType.WIDE);
+	private static final String stamp = "Templar Cosmetics";
 	
 	private static final String method = "Blowfish";
 	

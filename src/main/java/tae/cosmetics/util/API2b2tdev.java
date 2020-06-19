@@ -103,9 +103,7 @@ public class API2b2tdev implements Globals {
 				}
 				
 			}
-			
-			PlayerUtils.sendMessage(((JSONArray) sizes.get(index)).get(1).toString());
-			
+						
 			return (Long)((JSONArray)sizes.get(index)).get(1);
 			
 		} catch (ParseException e) {
