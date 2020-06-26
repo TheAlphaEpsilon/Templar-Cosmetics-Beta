@@ -245,15 +245,23 @@ public class BookArt extends AbstractTAEGuiScreen {
 	}
 	
 	private static void mapFromPixel(int yCoord, int xCoord) {
-		mapFromPixel0(new Pixel(pixels[yCoord][xCoord]), yCoord, xCoord);
+		mapFromPixel0(new Pixel(pixels[yCoord][xCoord]), yCoord, xCoord, true);
 	}
 	
-	private static void mapFromPixel0(Pixel original, int yCoord, int xCoord) {
+	private static void mapFromPixel0(Pixel original, int yCoord, int xCoord, boolean first) {
 		if(yCoord < 0 || xCoord < 0 || yCoord >= pixels.length || xCoord >= pixels[yCoord].length) {
 			return;
 		}
 		
 		Pixel p = pixels[yCoord][xCoord];
+		
+		if(first) {
+			Pixel test = new Pixel();
+			updatePixel(test);
+			if(p.equals(test)) {
+				return;
+			}
+		}
 		
 		if(!original.equals(p)) {
 			return;
@@ -261,13 +269,13 @@ public class BookArt extends AbstractTAEGuiScreen {
 		
 		updatePixel(p);
 		
-		mapFromPixel0(original, yCoord - 1, xCoord);
+		mapFromPixel0(original, yCoord - 1, xCoord, false);
 		
-		mapFromPixel0(original, yCoord + 1, xCoord);
+		mapFromPixel0(original, yCoord + 1, xCoord, false);
 		
-		mapFromPixel0(original, yCoord, xCoord - 1);
+		mapFromPixel0(original, yCoord, xCoord - 1, false);
 
-		mapFromPixel0(original, yCoord, xCoord + 1);		
+		mapFromPixel0(original, yCoord, xCoord + 1, false);		
 	}
 	
 	private static void updatePixel(Pixel pixel) {
