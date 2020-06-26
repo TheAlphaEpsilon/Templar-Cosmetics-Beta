@@ -29,14 +29,13 @@ public class GuiScreenStalkerModGlobalOptions extends AbstractTAEGuiScreen {
 	
 	private GuiButton updateQueue;
 	private GuiSlider updateQueueTimer;
-		
-	private static final int xOffset = -5;
-	private static final int yOffset = 0;
 
 	public GuiScreenStalkerModGlobalOptions(GuiScreen in) {
 		
 		super(in);
 				
+		guiwidth = 410;
+		
 		toggleAlertOn = new GuiButton(0, 50, 50, 175, 20, "Toggle All Alert Notifications On");
  		toggleAlertOff = new GuiButton(1, 200, 50, 175, 20, "Toggle All Alert Notifications Off");
  		
@@ -84,26 +83,13 @@ public class GuiScreenStalkerModGlobalOptions extends AbstractTAEGuiScreen {
 		super.initGui();
 	}
 	
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-				
-		int i = width / 2 + xOffset;
-		int j = height / 2 + yOffset;
+	protected void drawScreen0(int x, int y, float tick) {
 		
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		GlStateManager.disableLighting();
-		GlStateManager.enableAlpha();
-		GlStateManager.enableBlend();
-		
-		mc.getTextureManager().bindTexture(PLAYER_OPTIONS);
-		Gui.drawScaledCustomSizeModalRect(i - 200, j - 90, 0, 0, 242, 192, 410, 180, 256, 256);
+		int i = width / 2;
+		int j = height / 2;
 		
 		String toSend = "Queue update timer: " + (((int)updateQueueTimer.getSliderValue() == 0) ? "Disabled" : ((int)updateQueueTimer.getSliderValue() + "m"));
 		this.drawString(fontRenderer, toSend, i + 20, j + 35, Color.WHITE.getRGB());
-		updateButtonPositions(i, j);
-
-		super.drawScreen(mouseX, mouseY, partialTicks);
-		
 	}
 	
 	@Override
@@ -119,8 +105,8 @@ public class GuiScreenStalkerModGlobalOptions extends AbstractTAEGuiScreen {
 	
 	@Override
 	protected void actionPerformed(GuiButton button) throws IOException {
-		int i = width / 2 + xOffset;
-		int j = height / 2 + yOffset;
+		int i = width / 2;
+		int j = height / 2;
 		
 		if(button == toggleAlertOn) {
 			PlayerAlert.getUUIDs().forEach(x -> PlayerAlert.updateSendAlert(x, true));

@@ -31,8 +31,8 @@ public class GuiCancelPackets extends GuiScreen {
 	
 	private ArrayList<Class<? extends Packet<?>>> canceledPackets = new ArrayList<>();
 	
-	private static final int xOffset = 0;
-	private static final int yOffset = 0;
+	private static final int guiwidth = 290;
+	private static final int guiheight = 200;
 	
 	private static GuiCancelPackets INSTANCE;
 	
@@ -284,8 +284,8 @@ public class GuiCancelPackets extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		
-		int i = this.width / 2 + xOffset;
-		int j = this.height / 2 + yOffset;
+		int i = this.width / 2;
+		int j = this.height / 2;
 		
 		updateButtonLocations(i, j);
 		

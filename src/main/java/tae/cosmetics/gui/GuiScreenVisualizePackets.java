@@ -29,6 +29,11 @@ public class GuiScreenVisualizePackets extends AbstractTAEGuiScreen {
     
 	public GuiScreenVisualizePackets(GuiScreen parent) {
 		super(parent);
+		override = true;
+	}
+	
+	protected void drawScreen0(int x, int y, float f) {
+		
 	}
 	
 	@Override

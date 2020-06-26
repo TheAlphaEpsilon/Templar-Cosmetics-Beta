@@ -23,18 +23,18 @@ public class GuiHome extends GuiScreen {
 	private GuiButton open2b2tcp;
 	private GuiButton openMisc;
 	
-	private GuiSetKeybind bookModKey = null;
+	//private GuiSetKeybind bookModKey = null;
 	private GuiSetKeybind stalkerModKey = null;
 	private GuiSetKeybind timestampModKey = null;
 	private GuiSetKeybind home = null;
 		
-	private static final int xOffset = 80;
-	private static final int yOffset = 0;
+	private static final int guiwidth = 290;
+	private static final int guiheight = 200;
 		
 	private static GuiHome INSTANCE = null;
 	
 	private GuiHome() {
-		openBookMod = new GuiButton(0, 0, 0, 150, 20, "Open Book Title Mod GUI");
+		openBookMod = new GuiButton(0, 0, 0, 150, 20, "Open Book Utilities");
 		openStalkerMod = new GuiButton(1, 0, 0, 150, 20, "Open Stalker Mod GUI");
 		openTimeStampMod = new GuiButton(2, 0, 0, 150, 20, "Open Timestamp Mod GUI");
 		open2b2tcp = new GuiButton(3, 0, 0, 150, 20, "2b2tcpdump");
@@ -57,7 +57,7 @@ public class GuiHome extends GuiScreen {
 		buttonList.add(openTimeStampMod);
 		buttonList.add(open2b2tcp);
 		buttonList.add(openMisc);
-				
+		/*		
 		if(bookModKey == null ) {        	
         	
         	bookModKey = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, BaseMod.getKey(0));
@@ -67,7 +67,7 @@ public class GuiHome extends GuiScreen {
         	bookModKey.setMaxStringLength(32);
         
 		}
-				
+			*/	
 		if(stalkerModKey == null ) {        	
         	
         	stalkerModKey = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, BaseMod.getKey(1));
@@ -104,7 +104,7 @@ public class GuiHome extends GuiScreen {
 		super.onGuiClosed();
 		Keyboard.enableRepeatEvents(false);
 
-		BaseMod.setBind(0, bookModKey.getKeyCode());
+		//BaseMod.setBind(0, bookModKey.getKeyCode());
 		
 		BaseMod.setBind(1, stalkerModKey.getKeyCode());
 		
@@ -120,7 +120,7 @@ public class GuiHome extends GuiScreen {
 	protected void actionPerformed(GuiButton button) throws IOException {
 		if(button == openBookMod) {
 			mc.addScheduledTask(() -> {
-				mc.displayGuiScreen(GuiBookTitleMod.instance());
+				mc.displayGuiScreen(new Books(this));
 			});
 		} else if(button == openStalkerMod) {
 			mc.addScheduledTask(() -> {
@@ -143,7 +143,8 @@ public class GuiHome extends GuiScreen {
 	
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if (bookModKey.textboxKeyTyped(typedChar, keyCode)) {
+		if(false) {
+		//if (bookModKey.textboxKeyTyped(typedChar, keyCode)) {
 			
         } else if (stalkerModKey.textboxKeyTyped(typedChar, keyCode)) {
 			
@@ -163,7 +164,8 @@ public class GuiHome extends GuiScreen {
 		
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 	
-		if(bookModKey.mouseClicked(mouseX, mouseY, mouseButton)) {
+		if(false) {
+		//if(bookModKey.mouseClicked(mouseX, mouseY, mouseButton)) {
 			
 		} else if(stalkerModKey.mouseClicked(mouseX, mouseY, mouseButton)) {
 			
@@ -180,8 +182,8 @@ public class GuiHome extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		
-		int i = width / 2 + xOffset;
-		int j = height / 2 + yOffset;
+		int i = width / 2;
+		int j = height / 2;
 		
 		updateButtonLocations(i, j);
 		
@@ -191,12 +193,14 @@ public class GuiHome extends GuiScreen {
 		GlStateManager.enableBlend();
 		
 		mc.getTextureManager().bindTexture(BACKGROUND);
-		Gui.drawScaledCustomSizeModalRect(i - 200, j - 100, 0, 0, 242, 192, 290, 200, 256, 256);	
+		Gui.drawScaledCustomSizeModalRect(i - guiwidth / 2, j - guiheight / 2, 0, 0, 242, 192, guiwidth, guiheight, 256, 256);	
 		
-		bookModKey.drawTextBox();
+		//bookModKey.drawTextBox();
 		stalkerModKey.drawTextBox();
 		timestampModKey.drawTextBox();
 		home.drawTextBox();
+		
+		i+=50;
 		
 		this.drawString(fontRenderer, "Open GUI", i - 180, j - 82, Color.WHITE.getRGB());
 		this.drawString(fontRenderer, "Keybinds", i - 10, j - 82, Color.WHITE.getRGB());
@@ -214,6 +218,8 @@ public class GuiHome extends GuiScreen {
 	
 	private void updateButtonLocations(int x, int y) {
 		
+		x+=50;
+		
 		openBookMod.x = x - 180;
 		openBookMod.y = y - 70;
 		
@@ -229,8 +235,8 @@ public class GuiHome extends GuiScreen {
 		openMisc.x = x - 180;
 		openMisc.y = y + 26;
 		
-		bookModKey.x = x - 10;
-		bookModKey.y = y - 67;
+		//bookModKey.x = x - 10;
+		//bookModKey.y = y - 67;
 		
 		stalkerModKey.x = x - 10;
 		stalkerModKey.y = y - 43;

@@ -25,7 +25,7 @@ public class BaseMod implements Globals {
 		
 	static {
 		// declare an array of key bindings
-		keyBindings = new KeyBinding[10]; 
+		keyBindings = new KeyBinding[11]; 
 		
 		// instantiate the key bindings
 		keyBindings[0] = new KeyBinding("Open Booktitle Mod GUI", Keyboard.CHAR_NONE, "TAE Cosmetics");
@@ -45,6 +45,8 @@ public class BaseMod implements Globals {
 		
 		keyBindings[9] = new KeyBinding("View Maps and Books", 0, "TAE Cosmetics");
 		
+		keyBindings[10] = new KeyBinding("Toggle Pearl Logging", 0, "TAE Cosmetics");
+
 		// register all the key bindings
 		for (int i = 0; i < keyBindings.length; ++i) 
 		{
@@ -82,6 +84,13 @@ public class BaseMod implements Globals {
 			VisualizePacketsMod.toggle();
 		} else if(keyBindings[8].isPressed()) {
 			VisualizePacketsMod.addMarker(new TimestampModule(Instant.now().toEpochMilli()));
+		} else if(keyBindings[10].isPressed()) {
+			PearlTracking.enabled = PearlTracking.enabled ? false : true;
+			if(PearlTracking.enabled) {
+				PlayerUtils.sendMessage("Pearl Tracking Enabled", ColorCode.LIGHT_PURPLE);
+			} else {
+				PlayerUtils.sendMessage("Pearl Tracking Disabled", ColorCode.LIGHT_PURPLE);
+			}
 		}
 	}
 	

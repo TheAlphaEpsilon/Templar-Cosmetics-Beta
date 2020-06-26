@@ -26,8 +26,8 @@ public class Gui2b2tcp extends GuiScreen {
 		return INSTANCE;
 	}
 	
-	private static final int xOffset = 0;
-	private static final int yOffset = 0;
+	private static final int guiwidth = 290;
+	private static final int guiheight = 200;
 	
 	private GuiButton openCancelPacketGui;
 	private GuiSetKeybind cancelPacketKeybind = null;
@@ -147,8 +147,8 @@ public class Gui2b2tcp extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		
-		int i = width / 2 + xOffset;
-		int j = height / 2 + yOffset;
+		int i = width / 2;
+		int j = height / 2;
 		
 		updateButtonLocations(i, j);
 		
@@ -158,7 +158,7 @@ public class Gui2b2tcp extends GuiScreen {
 		GlStateManager.enableBlend();
 		
 		mc.getTextureManager().bindTexture(BACKGROUND);
-		Gui.drawScaledCustomSizeModalRect(i - 145, j - 110, 0, 0, 242, 192, 290, 200, 256, 256);	
+		Gui.drawScaledCustomSizeModalRect(i - guiwidth / 2, j - guiheight / 2, 0, 0, 242, 192, guiwidth, guiheight, 256, 256);	
 		
 		this.drawString(fontRenderer, "Cancel packets keybind", i - 75, j - 65, Color.WHITE.getRGB());
 		this.drawString(fontRenderer, "Track packets keybind", i - 75, j - 15, Color.WHITE.getRGB());

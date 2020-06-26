@@ -19,9 +19,6 @@ public class GuiScreenStalkerModPlayerOptions extends AbstractTAEGuiScreen {
 	
 	private static final ResourceLocation PLAYER_OPTIONS = new ResourceLocation("taecosmetics","textures/gui/playeroptions.png");
 	
-	private static final int xOffset = 0;
-	private static final int yOffset = -105;    
-	
 	private ResourceLocation skin;
 	private int skinwidth;
 	private int skinheight;
@@ -51,6 +48,9 @@ public class GuiScreenStalkerModPlayerOptions extends AbstractTAEGuiScreen {
 	public GuiScreenStalkerModPlayerOptions(GuiScreen parent, String uuid, ResourceLocation skin, int skinwidth, int skinheight) {
 		super(parent);
 		
+		guiheight = 230;
+		guiwidth = 320;
+		
 		this.skin = skin;
 		this.skinwidth = skinwidth;
 		this.skinheight = skinheight;
@@ -60,6 +60,10 @@ public class GuiScreenStalkerModPlayerOptions extends AbstractTAEGuiScreen {
     	newname = PlayerAlert.newName(uuid);
     	prefix = PlayerAlert.prefix(uuid);
     	deleted = false;
+    	
+    	if(!oldname.equals(newname)) {
+    		updatename = true;
+    	}
     	
  		toggleAlert = new GuiOnOffButton(0, 0, 0, 135, 20, "Alert Notification ", PlayerAlert.joinAlert(uuid));
  		toggleQueue = new GuiOnOffButton(1, 0, 0, 135, 20, "Queue Notification ", PlayerAlert.queueAlert(uuid));
@@ -71,13 +75,13 @@ public class GuiScreenStalkerModPlayerOptions extends AbstractTAEGuiScreen {
 	@Override
 	public void initGui() {
 		
-		int i = width/2 + xOffset;
-		int j = height/2 + yOffset;	
+		int i = width/2;
+		int j = height/2;	
 				
 		noFormatRenderer = new NoFormatFontRenderer(mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), mc.renderEngine, fontRenderer.getUnicodeFlag());		
  		noFormatRenderer.onResourceManagerReload(null);
 
- 		this.chatPrefix = new GuiTextField(0, noFormatRenderer, i - 144, j + 114, 135, 12);
+ 		this.chatPrefix = new GuiTextField(0, noFormatRenderer, i - 144, j + 15, 135, 12);
     	this.chatPrefix.setTextColor(-1);
     	this.chatPrefix.setDisabledTextColour(-1);
     	this.chatPrefix.setEnableBackgroundDrawing(true);
@@ -170,19 +174,12 @@ public class GuiScreenStalkerModPlayerOptions extends AbstractTAEGuiScreen {
 		super.actionPerformed(button);
 	}
 	
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+	protected void drawScreen0(int x, int y, float f) {
+	
+		int i = width / 2;
+		int j = height / 2;
 		
-		int i = width/2 + xOffset;
-		int j = height/2 + yOffset;	
-		
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		GlStateManager.disableLighting();
-		GlStateManager.enableAlpha();
-		GlStateManager.enableBlend();
-		
-		mc.getTextureManager().bindTexture(PLAYER_OPTIONS);
-		Gui.drawScaledCustomSizeModalRect(i - 160, j - 10, 0, 0, 242, 192, 330, 230, 256, 256);	
+		j-=100;
 		
 		this.drawCenteredString(fontRenderer, oldname, i, j, Color.WHITE.getRGB());
 		this.drawCenteredString(fontRenderer, uuid, i, j + 12, Color.WHITE.getRGB());
@@ -211,15 +208,12 @@ public class GuiScreenStalkerModPlayerOptions extends AbstractTAEGuiScreen {
 		}
 				
 		updateName.enabled = updatename;
-		
-		updateButtonPositions(i, j);
-		
-		super.drawScreen(mouseX, mouseY, partialTicks);
-        
 	}
 
 	@Override
 	protected void updateButtonPositions(int x, int y) {
+		
+		y-= 100;
 		
 		toggleAlert.x = x - 146;
 		toggleAlert.y = y + 60;

@@ -30,6 +30,7 @@ import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import tae.cosmetics.ColorCode;
 import tae.cosmetics.exceptions.TAEModException;
 import tae.cosmetics.gui.GuiBookTitleMod;
 import tae.cosmetics.util.PlayerUtils;
@@ -43,9 +44,22 @@ public class HoverMapAndBook extends BaseMod {
 	
 	private static final int backgroundColor = new Color(203, 188, 147).getRGB();
 
-	private BookRenderer toRender = null;
+	private static BookRenderer toRender = null;
 	
-	private boolean keyWasDown = false;
+	private static boolean keyWasDown = false;
+	
+	private static double scale = 4;
+	
+	public static void updateScale(double s) {
+		scale = s;
+		if(toRender != null) {
+			toRender.scale = s;
+		}
+	}
+	
+	public static int getScale() {
+		return (int) scale;
+	}
 	
 	//Cancel normal tooltips
 	@SubscribeEvent
@@ -93,7 +107,7 @@ public class HoverMapAndBook extends BaseMod {
 			} else if(item instanceof ItemWrittenBook) {
 				
 				if(toRender == null || (toRender != null && !toRender.isNBTSame(hovered.getStack().getTagCompound()))) {
-					toRender = new BookRenderer(hovered.getStack(), 100, 10, 2);
+					toRender = new BookRenderer(hovered.getStack(), 100, 10, scale);
 				} 
 				toRender.draw(event.getMouseX(), event.getMouseY());
 			}
@@ -103,13 +117,11 @@ public class HoverMapAndBook extends BaseMod {
 	
 	//Draws the map on screen
 	private void drawMap(ItemStack mapStack, ItemMap map, int x, int y) {
+				
+		x = (int) (x * (8 / scale) + 5);
+		y = (int) (y * (8 / scale) - 128);
 		
-		final double scale = 2;
-		
-		x = (int) (x * scale + 5);
-		y = (int) (y * scale - 128);
-		
-		GlStateManager.scale(1 / scale, 1 / scale, 1 / scale);
+		GlStateManager.scale(scale / 8, scale / 8, scale / 8);
 		
 		Gui.drawRect(x - 1, y - 1, x + 129, y + 129, Color.BLACK.getRGB());
 		Gui.drawRect(x, y, x + 128, y + 128, backgroundColor);
@@ -132,7 +144,7 @@ public class HoverMapAndBook extends BaseMod {
 	        }
 		}
 		
-		GlStateManager.scale(scale, scale, scale);
+		GlStateManager.scale(8 / scale, 8 / scale, 8 / scale);
 		
 	}
 	
@@ -173,18 +185,6 @@ public class HoverMapAndBook extends BaseMod {
 			this.width = width;
 			this.padding = padding;
 			
-			if(fontRenderer.getStringWidth(title) > width) {
-				width = fontRenderer.getStringWidth(title);
-			}
-			if(fontRenderer.getStringWidth("By: " + author) > width) {
-				width = fontRenderer.getStringWidth("By: " + author);
-			}
-			
-			//Auto resize
-			while(height() > this.width * 2) {
-				this.width *= 2;
-			}
-			
 			//Generation
 			if(!nbt.hasKey("generation")) {
 				//if no generation key, assume og
@@ -205,15 +205,31 @@ public class HoverMapAndBook extends BaseMod {
 					gen = Generation.TAT;
 				}
 			}
+			
+			if(fontRenderer.getStringWidth(title) > width) {
+				width = fontRenderer.getStringWidth(title);
+			}
+			if(fontRenderer.getStringWidth("By: " + author) > width) {
+				width = fontRenderer.getStringWidth("By: " + author);
+			}
+			if(fontRenderer.getStringWidth("Generation: " + gen.toString()) > width) {
+				width = fontRenderer.getStringWidth("Generation: " + gen.toString());
+			}
+			
+			//Auto resize
+			while(height() > this.width * 2) {
+				this.width *= 2;
+			}
+			
 		}
 		
 		//Draw white and call text
 		private void draw(int x, int y) {
 			
-			GlStateManager.scale(1D / scale, 1D / scale, 1D / scale);
+			GlStateManager.scale(scale / 8, scale / 8, scale / 8);
 						
-			x *= scale;
-			y *= scale;
+			x *= 8 / scale;
+			y *= 8 / scale;
 			
 			x -= width / 2;
 			y += height() / 2;
@@ -250,7 +266,7 @@ public class HoverMapAndBook extends BaseMod {
 
 			drawText(x + padding, y - height() - padding);
 			
-			GlStateManager.scale(scale, scale, scale);
+			GlStateManager.scale(8 / scale, 8 / scale, 8 / scale);
 			
 		}
 		
@@ -280,7 +296,7 @@ public class HoverMapAndBook extends BaseMod {
 			StringBuffer buff = new StringBuffer();
 			for(int i = 0; i < array.length; i++) {
 				buff.append(array[i]);
-				buff.append(' ');
+				buff.append(" " + ColorCode.RESET.getCode());
 			}
 			return buff.toString();
 		}

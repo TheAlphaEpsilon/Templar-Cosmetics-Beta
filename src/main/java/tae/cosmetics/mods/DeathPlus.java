@@ -41,7 +41,7 @@ public class DeathPlus extends BaseMod {
 	@SubscribeEvent
 	public void click(ActionPerformedEvent.Post event) {
 		GuiButton button = event.getButton();
-		if(button.id == 42) {
+		if(button.id == 42 && mc.currentScreen instanceof GuiGameOver) {
 			oldGui = event.getGui();
 			freecam = true;
 			

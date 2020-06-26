@@ -98,7 +98,11 @@ public class GuiScreenMoveScreenElements extends AbstractTAEGuiScreen {
 		cancel.draw(mouseX, mouseY);
 		caught.draw(mouseX, mouseY);
 	}
-			
+		
+	protected void drawScreen0(int x, int y, float tick) {
+		
+	}
+
 	@Override
 	protected void updateButtonPositions(int x, int y) {		
 	}

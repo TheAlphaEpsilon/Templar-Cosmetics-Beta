@@ -12,6 +12,9 @@ Also uses forgehax's class loader.
 ---------------------------------------------------------------------
 
 ### Quick Overview
+
+This is my pet project where I just throw my ideas together. I'm trying to have stuff that other clients don't but would benefit my gameplay. I kinda just kept building on to this without any framework, so I apologize for the horrendous code. Maybe I'll fix it later...
+
 Mods include: colored book titles, stalker mod (view players in 2b2t queue), unicode keyboard, packet canceling and visualization, hover-viewing maps and books, and more.
 
 Please note that this is a Beta mod and errors may occur. For any comments, questions, or concerns feel free to make an issue or message TheAlphaEpsilon#7015 at https://discord.gg/myqngze
@@ -19,6 +22,14 @@ Please note that this is a Beta mod and errors may occur. For any comments, ques
 ---------------------------------------------------------------------
 
 ### Mods
+
+#### Booktitle
+- Create books with colored and unicode titles
+
+#### Bookart
+- Added pages of pixel art to books
+- (2b2t only allows 256 characterrs per page)
+
 #### Stalker Mod
 - Add players and see if they are online, in-queue, or offline
 - Able to approximate a player's queue position in normal queue and priority queue
@@ -28,9 +39,6 @@ Please note that this is a Beta mod and errors may occur. For any comments, ques
 
 #### Timestamp
 - Add a configurable timestamp before chat messages
-
-#### Booktitle
-- Create books with colored and unicode titles
 
 #### Unicode Keyboard
 - Allows for ease of use with unicode alphabet on otherwise annoying places such as signs and book titles
@@ -58,3 +66,6 @@ Please note that this is a Beta mod and errors may occur. For any comments, ques
 
 #### Pearl Logger
 - Easy logging of pearls for pearl loading.
+
+#### Item Frame Map IDs
+- Shows the ID of maps in item frames.

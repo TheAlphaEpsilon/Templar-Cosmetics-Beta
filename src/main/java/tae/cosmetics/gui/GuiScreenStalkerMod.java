@@ -58,6 +58,7 @@ public class GuiScreenStalkerMod extends AbstractTAEGuiScreen {
     
 	public GuiScreenStalkerMod(GuiScreen parent) {
 		super(parent);
+		override = true;
 	}
 
 	@Override
@@ -184,13 +185,15 @@ public class GuiScreenStalkerMod extends AbstractTAEGuiScreen {
 		
 	}
 
+	protected void drawScreen0(int x, int y, float f) {
+		
+	}
+	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 				
 		int i = width / 2 + xOffset;
 		int j = height / 2 + yOffset;
-		
-		updateButtonPositions(i, j);
 		
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.disableLighting();
@@ -329,17 +332,17 @@ public class GuiScreenStalkerMod extends AbstractTAEGuiScreen {
 	@Override
 	protected void updateButtonPositions(int x, int y) {
 		
-		addplayerbutton.x = x - 96;
-		addplayerbutton.y = y - 43;
+		addplayerbutton.x = x - 115;
+		addplayerbutton.y = y - 83;
 		
-		settingsbutton.x = x - 65;
-		settingsbutton.y = y + 103;
+		settingsbutton.x = x - 90;
+		settingsbutton.y = y + 60;
 		
-		nameField.x = x - 23;
-		nameField.y = y - 36;
+		nameField.x = x - 45;
+		nameField.y = y - 76;
 		
-		scroll.x = x + 141;
-		scroll.y = y - 18;
+		scroll.x = x + 121;
+		scroll.y = y - 58;
 		
 	}
 	

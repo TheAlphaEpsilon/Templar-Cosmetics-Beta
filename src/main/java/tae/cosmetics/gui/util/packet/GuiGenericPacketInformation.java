@@ -45,7 +45,7 @@ public class GuiGenericPacketInformation extends AbstractTAEGuiScreen {
 	public GuiGenericPacketInformation(Packet<?> packet, GuiScreen parent) {
 		
 		super(parent);
-		
+		override = true;
 		this.packet = packet;
 	}
 	
@@ -188,6 +188,12 @@ public class GuiGenericPacketInformation extends AbstractTAEGuiScreen {
 	protected void updateButtonPositions(int x, int y) {	
 		back.x = 0;
 		back.y = 0;
+	}
+
+	@Override
+	protected void drawScreen0(int mouseX, int mouseY, float partialTicks) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

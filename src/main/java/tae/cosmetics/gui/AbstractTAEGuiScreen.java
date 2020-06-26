@@ -10,17 +10,25 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import tae.cosmetics.Globals;
 
 public abstract class AbstractTAEGuiScreen extends GuiScreen {
-	
-	//TODO: Implement
-	
+			
 	private GuiScreen parent;
 	
 	protected GuiButton back = new GuiButton(0, 0, 0, 70, 20, "Back");
 	
 	protected ArrayList<GuiMessage> messagesToDraw = new ArrayList<>();
+	
+	protected ResourceLocation BACKGROUND = new ResourceLocation("taecosmetics","textures/gui/playeroptions.png");
+	
+	protected int guiwidth = 290;
+	
+	protected int guiheight = 200;
+	
+	protected boolean override = false;
 	
 	protected AbstractTAEGuiScreen(GuiScreen parent) {
 		this.parent = parent;
@@ -28,6 +36,23 @@ public abstract class AbstractTAEGuiScreen extends GuiScreen {
 		
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		
+		int i = width / 2;
+		int j = height / 2;
+		
+		updateButtonPositions(i, j);
+		
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.disableLighting();
+		GlStateManager.enableAlpha();
+		GlStateManager.enableBlend();
+		
+		mc.getTextureManager().bindTexture(BACKGROUND);
+		if(!override) {
+			Gui.drawScaledCustomSizeModalRect(i - guiwidth / 2, j - guiheight / 2, 0, 0, 242, 192, guiwidth, guiheight, 256, 256);	
+		}
+		
+		drawScreen0(mouseY, mouseY, partialTicks);
 		
 		messagesToDraw.forEach(x -> x.draw());
 				
@@ -74,6 +99,8 @@ public abstract class AbstractTAEGuiScreen extends GuiScreen {
 	
 	@Override
 	public abstract void onGuiClosed();
+	
+	protected abstract void drawScreen0(int mouseX, int mouseY, float partialTicks);
 	
 	@Override
 	public void drawHoveringText(String text, int x, int y) {
