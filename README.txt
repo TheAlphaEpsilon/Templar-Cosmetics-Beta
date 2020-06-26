@@ -6,6 +6,7 @@
 - api.2b2t.dev
 - 2b2t.io
 - rebane2001.com/queuepeek
+- api.mojang.org
 
 Also uses forgehax's class loader.
 
