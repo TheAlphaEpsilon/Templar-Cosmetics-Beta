@@ -24,11 +24,11 @@ public class DeathPlus extends BaseMod {
 	private static GuiScreen oldGui;
 	private static boolean freecam = false;
 	private static NBTTagCompound old = new NBTTagCompound();
-	
+	/*
 	private static double x;
 	private static double y;
 	private static double z;
-	
+	*/
 	@SubscribeEvent
 	public void initGui(InitGuiEvent.Post event) {
 		
@@ -59,11 +59,11 @@ public class DeathPlus extends BaseMod {
 			mc.player.noClip = true;
 			mc.player.onGround = false;
 		    mc.player.fallDistance = 0;
-
+		    /*
 		    x = mc.player.posX;
 		    y = mc.player.posY;
 		    z = mc.player.posZ;
-		   
+		   */
 		    
 			mc.addScheduledTask(() -> {
 				mc.player.capabilities.disableDamage = true;

@@ -4,15 +4,8 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiSlider;
-import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
-import net.minecraft.client.gui.GuiSlider.FormatHelper;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
-import scala.actors.threadpool.Arrays;
 import tae.cosmetics.gui.util.GuiDisplayListButton;
 import tae.cosmetics.gui.util.GuiOnOffButton;
 import tae.cosmetics.gui.util.GuiSetKeybind;
@@ -20,11 +13,8 @@ import tae.cosmetics.mods.BaseMod;
 import tae.cosmetics.mods.ChatEncryption;
 import tae.cosmetics.mods.HoverMapAndBook;
 import tae.cosmetics.mods.PearlTracking;
-import tae.cosmetics.mods.QueuePeekMod;
 
 public class GuiMisc extends AbstractTAEGuiScreen {
-
-	private static final ResourceLocation BACKGROUND = new ResourceLocation("taecosmetics","textures/gui/playeroptions.png");
 
 	private GuiOnOffButton sendEncrypt;
 	private GuiOnOffButton showEncryptRaw;
@@ -36,13 +26,13 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 	private GuiSetKeybind pearl = null;
 	
 	private GuiDisplayListButton<Integer> bookandmapscale;
-	
+		
 	public GuiMisc(GuiScreen parent) {
 		super(parent);
 		guiheight = 220;
 		sendEncrypt = new GuiOnOffButton(0, 0, 0, 135, 20, "Send Encrypted Chat ", ChatEncryption.enabled);
 		showEncryptRaw = new GuiOnOffButton(0, 0, 0, 135, 20, "Show Raw Text ", ChatEncryption.showRaw);
-		pearlLogging = new GuiOnOffButton(0, 0, 0, 135, 20, "Pearl Logging ", PearlTracking.enabled);
+		pearlLogging = new GuiOnOffButton(0, 0, 0, 135, 20, "Pearl Logging ", PearlTracking.enabled.getValue());
 		
 		ArrayList<Integer> list = new ArrayList<>();
 		for(int i = 1; i <= 16; i++) {
@@ -55,19 +45,19 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 	@Override
 	public void initGui() {
 		
-		elytra = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, BaseMod.getKey(4));
+		elytra = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, BaseMod.elytra.getInt());
 		elytra.setTextColor(-1);
 		elytra.setDisabledTextColour(-1);
 		elytra.setEnableBackgroundDrawing(true);
 		elytra.setMaxStringLength(32);
 		
-		hover = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, BaseMod.getKey(9));
+		hover = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, HoverMapAndBook.keybind.getInt());
 		hover.setTextColor(-1);
 		hover.setDisabledTextColour(-1);
 		hover.setEnableBackgroundDrawing(true);
 		hover.setMaxStringLength(32);
 		
-		pearl = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, BaseMod.getKey(10));
+		pearl = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, PearlTracking.toggle.getInt());
 		pearl.setTextColor(-1);
 		pearl.setDisabledTextColour(-1);
 		pearl.setEnableBackgroundDrawing(true);
@@ -85,9 +75,11 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 
 	@Override
 	public void onGuiClosed() {
-		BaseMod.setBind(4, elytra.getKeyCode());
-		BaseMod.setBind(9, hover.getKeyCode());
-		BaseMod.setBind(10, pearl.getKeyCode());
+		
+		BaseMod.elytra.updateBinding(elytra.getKeyCode());
+		HoverMapAndBook.keybind.updateBinding(hover.getKeyCode());
+		PearlTracking.toggle.updateBinding(pearl.getKeyCode());
+		
 		mc.gameSettings.saveOptions();
 		
 	}
@@ -121,7 +113,7 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 			} else if(button == showEncryptRaw) {
 				ChatEncryption.showRaw = ((GuiOnOffButton) button).getState();
 			} else if(button == pearlLogging) {
-				PearlTracking.enabled = ((GuiOnOffButton) button).getState();
+				PearlTracking.enabled.setValue(((GuiOnOffButton) button).getState());
 			}
 			
 		} else if(button == bookandmapscale) {

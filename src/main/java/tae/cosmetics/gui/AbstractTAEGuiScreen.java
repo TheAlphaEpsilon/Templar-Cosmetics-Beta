@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -76,10 +77,10 @@ public abstract class AbstractTAEGuiScreen extends GuiScreen {
 	    return false;
 	}
 	
-	public void displayScreen(GuiScreen screenIn) {
-		mc.addScheduledTask(() -> {
+	public static void displayScreen(GuiScreen screenIn) {
+		Minecraft.getMinecraft().addScheduledTask(() -> {
 			
-			mc.displayGuiScreen(screenIn);
+			Minecraft.getMinecraft().displayGuiScreen(screenIn);
 			
 		});
 	}

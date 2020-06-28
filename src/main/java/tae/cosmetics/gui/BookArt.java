@@ -5,11 +5,9 @@ import java.io.IOException;
 import java.util.List;
 
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiUtilRenderComponents;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,9 +19,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import tae.cosmetics.ColorCode;
 import tae.cosmetics.gui.util.GuiOnOffButton;
+import tae.cosmetics.gui.util.GuiSignature;
+import tae.cosmetics.settings.Keybind;
 
 public class BookArt extends AbstractTAEGuiScreen {
-
+	
 	private static final int bookWidth = 14; //height oops
 	private static final int bookHeight = 12; //width
 	
@@ -83,7 +83,6 @@ public class BookArt extends AbstractTAEGuiScreen {
 	
 	}
 	
-	private static final ResourceLocation BACKGROUND = new ResourceLocation("taecosmetics","textures/gui/playeroptions.png");
     private static final ResourceLocation BOOK_GUI_TEXTURES = new ResourceLocation("textures/gui/book.png");
     
     private static GuiButton currentButtonSize;
@@ -97,6 +96,8 @@ public class BookArt extends AbstractTAEGuiScreen {
 	private static GuiButton buttonForward;
 	
 	private static GuiButton addPage;
+	
+	private static GuiButton clear;
 	
 	private static GuiOnOffButton mode2b2t;
 	
@@ -120,6 +121,8 @@ public class BookArt extends AbstractTAEGuiScreen {
 		addPage = new GuiButton(99, 0, 0, 90, 20, "Add this page");
 		
 		mode2b2t = new GuiOnOffButton(102, 0, 0, 130, 20, "2b2t mode: ", false);
+		
+		clear = new GuiButton(103, 0, 0, 40, 20, "Clear");
 	}
 
 	@Override
@@ -145,6 +148,8 @@ public class BookArt extends AbstractTAEGuiScreen {
 		
 		buttonList.add(mode2b2t);
 		
+		buttonList.add(clear);
+		
 		super.initGui();
 		
 	}
@@ -153,6 +158,7 @@ public class BookArt extends AbstractTAEGuiScreen {
 		int i = width / 2;
 		int j = height / 2;
 		drawPseudoBook(i, j - 10, mouseX, mouseY);
+		GuiSignature.draw(i + 132, j + 110);
 	}
 	
 	private void drawPseudoBook(int x, int y, int mouseX, int mouseY) {
@@ -176,15 +182,24 @@ public class BookArt extends AbstractTAEGuiScreen {
 		builder.append("{\"text\":\"");
 		for(int i = 0; i < pixels.length; i++) {
 			for(int j = 0; j < pixels[i].length; j++) {
-				if(j > 0 && pixels[i][j].equals(pixels[i][j-1])) {
-					builder.append(pixels[i][j].c);
-				} else if(j > 0 && pixels[i][j].code == pixels[i][j-1].code){
-					builder.append(pixels[i][j].format.getCode() + pixels[i][j].c);
-				} else if(j > 0 && pixels[i][j].format == ColorCode.RESET && pixels[i][j - 1].format != ColorCode.RESET) {
-					builder.append(ColorCode.RESET.getCode() + pixels[i][j].getPixel());
+				
+				Pixel p = pixels[i][j];
+				
+				if(j > 0) {
+					Pixel prev = pixels[i][j-1];
+					
+					if(p.code == prev.code && p.format == prev.format) {
+						builder.append(p.c);
+					} else if(p.code == prev.code && p.format != prev.format) {
+						builder.append(p.format.getCode() + p.c);
+					} else {
+						builder.append(p.getPixel());
+					}
+						
 				} else {
-					builder.append(pixels[i][j].getPixel());
+					builder.append(p.getPixel());
 				}
+				
 			}
 			if(i != pixels.length - 1) {
 				builder.append("\\n");
@@ -380,6 +395,12 @@ public class BookArt extends AbstractTAEGuiScreen {
 			} else if(button == mode2b2t) {
 				mode2b2t.toggle();
 				shorten = mode2b2t.getState();
+			} else if(button == clear) {
+				for(int i = 0; i < pixels.length; i++) {
+					for(int j = 0; j < pixels[i].length; j++) {
+						pixels[i][j] = new Pixel();
+					}
+				}
 			}
 			
 		}
@@ -429,6 +450,9 @@ public class BookArt extends AbstractTAEGuiScreen {
 		
 		mode2b2t.x = x + 30;
 		mode2b2t.y = y - 95 + 8 * 22;
+		
+		clear.x = x - 160;
+		clear.y = y - 95 + 8 * 22;
 		
 	}
 	

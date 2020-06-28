@@ -1,12 +1,7 @@
 package tae.cosmetics.mods;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import net.minecraft.entity.item.EntityEnderPearl;
 import net.minecraft.init.Items;
@@ -16,35 +11,40 @@ import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.ColorCode;
-import tae.cosmetics.exceptions.TAEModException;
+import tae.cosmetics.settings.Keybind;
+import tae.cosmetics.settings.Setting;
+import tae.cosmetics.util.FileHelper;
 import tae.cosmetics.util.PlayerUtils;
 import tae.packetevent.PacketEvent;
 
 public class PearlTracking extends BaseMod {
 
-	private static final String fileName = "TemplarCosmetics/PearlLog.txt";
-	private static final File file = new File(fileName);
+	private static final String fileName = "PearlLog.txt";
 	
 	static {
 	
-		new File("TemplarCosmetics").mkdir();
-	
-		try {
-			file.createNewFile();
-		} catch (IOException e) {
-			new TAEModException(PearlTracking.class, "Couldn't create " + fileName + " : " + e.getMessage()).post();
-		}
+		FileHelper.createFile(fileName);
 		
 	}
 	
-	public static boolean enabled = false;
+	public static Setting<Boolean> enabled = new Setting<>("Toggle Pearl Tracking", false);
 	
+	public static final Keybind toggle = new Keybind("Toggle Pearl Tracking",0, () -> {
+		enabled.setValue((boolean)PearlTracking.enabled.getValue() ? false : true);
+		
+		if((boolean)enabled.getValue()) {
+			PlayerUtils.sendMessage("Pearl Tracking Enabled", ColorCode.LIGHT_PURPLE);
+		} else {
+			PlayerUtils.sendMessage("Pearl Tracking Disabled", ColorCode.LIGHT_PURPLE);
+		}
+	});
+
 	private static boolean usedItem = false;
 	
 	@SubscribeEvent
 	public void useItem(PacketEvent.Outgoing event) {
 		
-		if(enabled && event.getPacket() instanceof CPacketPlayerTryUseItem) {
+		if((boolean)enabled.getValue() && event.getPacket() instanceof CPacketPlayerTryUseItem) {
 			CPacketPlayerTryUseItem packet = (CPacketPlayerTryUseItem) event.getPacket();
 			EnumHand hand = packet.getHand();
 			ItemStack stack;
@@ -67,13 +67,13 @@ public class PearlTracking extends BaseMod {
 	@SubscribeEvent
 	public void packetIn(EntityJoinWorldEvent event) {
 		
-		if(enabled && usedItem && event.getEntity() instanceof EntityEnderPearl) {
+		if((boolean)enabled.getValue() && usedItem && event.getEntity() instanceof EntityEnderPearl) {
 			
 			usedItem = false;
 			
 			StringBuilder toWrite = new StringBuilder();
 			
-			ArrayList<String> readData = readFile(file);
+			ArrayList<String> readData = FileHelper.readFile(fileName);
 			
 			for(String s : readData) {
 				toWrite.append(s + "\n");
@@ -111,43 +111,9 @@ public class PearlTracking extends BaseMod {
 				toWrite.append("+Z)");
 			}
 			
-			writeFile(file, toWrite.toString());
+			FileHelper.writeFile(fileName, toWrite.toString());
+			PlayerUtils.sendMessage("Pearl Logged", ColorCode.GREEN);
 			
-			
-		}
-		
-	}
-	
-	private static void writeFile(File file, String toWrite) {
-		try {
-			FileWriter writer = new FileWriter(file);
-			writer.write(toWrite);
-			writer.close();
-			PlayerUtils.sendMessage("Logged Pearl", ColorCode.GREEN);
-		} catch (IOException e) {
-			new TAEModException(PearlTracking.class, "Couldn't write " + fileName + " : " + e.getMessage()).post();
-
-		}
-	}
-	
-	private static ArrayList<String> readFile(File file) {
-		
-		try {
-			Scanner scanner = new Scanner(file);
-			
-			ArrayList<String> toReturn = new ArrayList<>();
-			
-			while(scanner.hasNextLine()) {
-				toReturn.add(scanner.nextLine());
-			}
-			
-			scanner.close();
-			
-			return toReturn;
-			
-		} catch (FileNotFoundException e) {
-			new TAEModException(PearlTracking.class, "Couldn't read " + fileName + " : " + e.getMessage()).post();
-			return null;
 		}
 		
 	}

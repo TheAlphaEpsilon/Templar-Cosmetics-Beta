@@ -5,8 +5,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.network.play.server.SPacketPlayerPosLook;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -15,9 +13,11 @@ import tae.packetevent.PacketEvent;
 
 public class ModifiedFreecam extends BaseMod {
 
+	/*
 	private static Vec3d pos = Vec3d.ZERO;
 	private static Vec2f pitchyaw = Vec2f.ZERO;
-	  
+	*/
+	
 	  private static boolean isRidingEntity;
 	
 	  public static boolean enabled = false;
@@ -38,8 +38,10 @@ public class ModifiedFreecam extends BaseMod {
 	      mc.player.dismountRidingEntity();
 	    } 
 	    
+	    /*
 	    pos = mc.player.getPositionVector();
 	    pitchyaw = mc.player.getPitchYaw();
+	    */
 	    
 	    originalPlayer = new EntityOtherPlayerMP(mc.world, mc.getSession().getProfile());
 	    originalPlayer.copyLocationAndAnglesFrom(mc.player);
@@ -126,8 +128,8 @@ public class ModifiedFreecam extends BaseMod {
 	    }
 	    
 	    if (event.getPacket() instanceof SPacketPlayerPosLook) {
-	      SPacketPlayerPosLook packet = (SPacketPlayerPosLook) event.getPacket();
-	      pos = new Vec3d(packet.getX(), packet.getY(), packet.getZ());
+	      //SPacketPlayerPosLook packet = (SPacketPlayerPosLook) event.getPacket();
+	      //pos = new Vec3d(packet.getX(), packet.getY(), packet.getZ());
 	      //angle = Angle.degrees(packet.getPitch(), packet.getYaw());
 	      event.setCanceled(true);
 	    }
@@ -139,7 +141,7 @@ public class ModifiedFreecam extends BaseMod {
 	      return;
 	    }
 	    
-	    pos = mc.player.getPositionVector();
+	    //pos = mc.player.getPositionVector();
 	    //angle = LocalPlayerUtils.getViewAngles();
 	  }
 	  

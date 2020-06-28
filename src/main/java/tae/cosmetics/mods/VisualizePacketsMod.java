@@ -20,13 +20,26 @@ import tae.cosmetics.gui.util.packet.TimestampModule;
 import tae.cosmetics.gui.util.packet.UnknownPacketModule;
 import tae.cosmetics.gui.util.packet.client.*;
 import tae.cosmetics.gui.util.packet.server.*;
+import tae.cosmetics.settings.Keybind;
+import tae.cosmetics.settings.Setting;
 import tae.packetevent.PacketEvent;
 
 public class VisualizePacketsMod extends BaseMod {
 
+	public static final Keybind toggle = new Keybind("Start Tracking Packets",0, () -> {
+		toggle();
+	});
+	
+	public static final Keybind addMarker = new Keybind("Add Packet Marker",0, () -> {
+		addMarker(new TimestampModule(Instant.now().toEpochMilli()));
+	});
+
 	private static boolean enabled = false;
 	
-	private static VisualizePacketsGuiList gui = new VisualizePacketsGuiList("Caught Packet:", 100, 50);
+	private static Setting<Integer> xCoord = new Setting<>("Visualize x Coord", new Integer(100));
+	private static Setting<Integer> yCoord = new Setting<>("Visualize y Coord", new Integer(50));
+	
+	private static VisualizePacketsGuiList gui = new VisualizePacketsGuiList("Caught Packet:", xCoord.getValue(), yCoord.getValue());
 	
 	public static ArrayList<AbstractPacketModule> modulesToDraw = new ArrayList<>();
 
@@ -42,6 +55,8 @@ public class VisualizePacketsMod extends BaseMod {
 	}
 	
 	public static void updateGui(int x, int y) {
+		xCoord.setValue(x);
+		yCoord.setValue(y);
 		gui.x = x;
 		gui.y = y;
 	}

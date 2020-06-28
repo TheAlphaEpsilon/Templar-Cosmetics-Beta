@@ -19,21 +19,22 @@ import net.minecraft.network.status.client.CPacketPing;
 import net.minecraft.network.status.server.SPacketPong;
 import net.minecraft.network.status.server.SPacketServerInfo;
 import net.minecraft.util.ResourceLocation;
+import tae.cosmetics.exceptions.TAEModException;
 import tae.cosmetics.gui.util.GuiOnOffButton;
 import tae.cosmetics.gui.util.ScrollBar;
+import tae.cosmetics.util.FileHelper;
 
 public class GuiCancelPackets extends GuiScreen {
 
+	private static final String fileName = "canceledpackets.txt";
+	
 	public static final ArrayList<Class<? extends Packet<?>>> client = new ArrayList<>();
 	public static final ArrayList<Class<? extends Packet<?>>> server = new ArrayList<>();
 	
     private static final ResourceLocation BACKGROUND = new ResourceLocation("taecosmetics","textures/gui/cancelpackets.png");
 	
-	private ArrayList<Class<? extends Packet<?>>> canceledPackets = new ArrayList<>();
-	
-	private static final int guiwidth = 290;
-	private static final int guiheight = 200;
-	
+    private static ArrayList<Class<? extends Packet<?>>> canceledPackets = new ArrayList<>();
+    
 	private static GuiCancelPackets INSTANCE;
 	
 	private GuiOnOffButton[] clientbuttons = new GuiOnOffButton[client.size()];
@@ -162,6 +163,29 @@ public class GuiCancelPackets extends GuiScreen {
 		server.add(SPacketWindowProperty.class);
 		server.add(SPacketWorldBorder.class);
 		
+		FileHelper.createFile(fileName);
+		
+		load();
+		
+	}
+	
+	public static void save() {
+		StringBuilder builder = new StringBuilder();
+		for(Class<? extends Packet<?>> clazz : canceledPackets) {
+			builder.append(clazz.getName() + "\n");
+		}
+		FileHelper.overwriteFile(fileName, builder.toString());
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static void load() {
+		for(String s : FileHelper.readFile(fileName)) {
+			try {
+				canceledPackets.add((Class<? extends Packet<?>>) Class.forName(s));
+			} catch (Exception e) {
+				new TAEModException(GuiCancelPackets.class, "Cannot load canceled packets from config: " + e.getMessage()).post();
+			}
+		}
 	}
 	
 	public static GuiCancelPackets instance() {
@@ -175,14 +199,14 @@ public class GuiCancelPackets extends GuiScreen {
 		int counter = -1;
 		for(Class<? extends Packet<?>> clazz : client) {
 			
-			clientbuttons[++counter] = new GuiOnOffButton(counter, 0, 0, 150, 20, clazz.getSimpleName().substring(7) + " ", true);
+			clientbuttons[++counter] = new GuiOnOffButton(counter, 0, 0, 150, 20, clazz.getSimpleName().substring(7) + " ", !canceledPackets.contains(clazz));
 			
 		}
 		
 		counter = -1;
 		for(Class<? extends Packet<?>> clazz : server) {
 			
-			serverbuttons[++counter] = new GuiOnOffButton(counter, 0, 0, 150, 20, clazz.getSimpleName().substring(7) + " ", true);
+			serverbuttons[++counter] = new GuiOnOffButton(counter, 0, 0, 150, 20, clazz.getSimpleName().substring(7) + " ", !canceledPackets.contains(clazz));
 			
 		}
 		
@@ -368,10 +392,6 @@ public class GuiCancelPackets extends GuiScreen {
 		return new ArrayList<Class<? extends Packet<?>>>(canceledPackets);
 	}
 	
-	public void addCancel(Class<? extends Packet<?>> p) {
-		canceledPackets.add(p);
-	}
-	
 	public void toggleButton(int type, int index) {
 		if(type == 0) {
 			
@@ -425,14 +445,11 @@ public class GuiCancelPackets extends GuiScreen {
 
             this.zLevel = 300.0F;
             this.itemRender.zLevel = 300.0F;
-            int l = -267386864;
             this.drawGradientRect(l1 - 3, i2 - 4, l1 + i + 3, i2 - 3, -267386864, -267386864);
             this.drawGradientRect(l1 - 3, i2 + k + 3, l1 + i + 3, i2 + k + 4, -267386864, -267386864);
             this.drawGradientRect(l1 - 3, i2 - 3, l1 + i + 3, i2 + k + 3, -267386864, -267386864);
             this.drawGradientRect(l1 - 4, i2 - 3, l1 - 3, i2 + k + 3, -267386864, -267386864);
             this.drawGradientRect(l1 + i + 3, i2 - 3, l1 + i + 4, i2 + k + 3, -267386864, -267386864);
-            int i1 = 1347420415;
-            int j1 = 1344798847;
             this.drawGradientRect(l1 - 3, i2 - 3 + 1, l1 - 3 + 1, i2 + k + 3 - 1, 1347420415, 1344798847);
             this.drawGradientRect(l1 + i + 2, i2 - 3 + 1, l1 + i + 3, i2 + k + 3 - 1, 1347420415, 1344798847);
             this.drawGradientRect(l1 - 3, i2 - 3, l1 + i + 3, i2 - 3 + 1, 1347420415, 1347420415);

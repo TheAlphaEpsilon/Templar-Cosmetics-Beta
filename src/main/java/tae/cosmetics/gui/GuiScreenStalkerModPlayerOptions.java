@@ -16,9 +16,7 @@ import tae.cosmetics.gui.util.NoFormatFontRenderer;
 import tae.cosmetics.util.PlayerAlert;
 
 public class GuiScreenStalkerModPlayerOptions extends AbstractTAEGuiScreen {
-	
-	private static final ResourceLocation PLAYER_OPTIONS = new ResourceLocation("taecosmetics","textures/gui/playeroptions.png");
-	
+		
 	private ResourceLocation skin;
 	private int skinwidth;
 	private int skinheight;

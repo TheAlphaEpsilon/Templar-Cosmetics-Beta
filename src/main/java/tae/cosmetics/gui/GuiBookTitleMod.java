@@ -22,9 +22,14 @@ import tae.cosmetics.gui.util.ContainerBookTitleMod;
 import tae.cosmetics.gui.util.NoFormatFontRenderer;
 import tae.cosmetics.mods.UnicodeKeyboard;
 import tae.cosmetics.mods.UnicodeKeyboard.TextType;
+import tae.cosmetics.settings.Keybind;
 
 public class GuiBookTitleMod extends GuiContainer {
 
+	public static final Keybind openGui = new Keybind("Open Book Title Mod",0, () -> {
+		AbstractTAEGuiScreen.displayScreen(instance());
+	});
+	
     private static final ResourceLocation BOOKTITLE_RESOURCE = new ResourceLocation("taecosmetics","textures/gui/booktitle.png");
     
     private static final String sign = UnicodeKeyboard.toUnicode("TEMPLAR", TextType.SMALL);

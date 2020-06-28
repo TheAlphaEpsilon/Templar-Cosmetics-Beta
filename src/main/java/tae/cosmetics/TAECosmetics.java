@@ -10,10 +10,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import tae.cosmetics.config.ConfigManager;
 import tae.cosmetics.exceptions.TAEModException;
+import tae.cosmetics.gui.GuiCancelPackets;
 import tae.cosmetics.gui.GuiScreenStalkerMod;
+import tae.cosmetics.settings.Keybind;
+import tae.cosmetics.settings.KeybindListener;
 import tae.cosmetics.util.API2b2tdev;
+import tae.cosmetics.util.PlayerAlert;
 import tae.cosmetics.util.RebaneGetter;
 import tae.cosmetics.util.TrustManagerSetup;
 
@@ -38,7 +41,6 @@ public class TAECosmetics implements Globals
 		API2b2tdev.update();
     	
     	new Thread(() -> {
-        	ConfigManager.load();
     		GuiScreenStalkerMod.updateResourceMap();
     		changeMainMenu();
     	}).run();
@@ -54,12 +56,18 @@ public class TAECosmetics implements Globals
     	if(event.getSide() == Side.CLIENT) {
     		MinecraftForge.EVENT_BUS.register(new tae.packetevent.ChannelHandlerInput());
     		MinecraftForge.EVENT_BUS.register(new OnLogin());
+    		MinecraftForge.EVENT_BUS.register(new KeybindListener());
     	}
     }
     
     @EventHandler
     public void postInit(FMLInitializationEvent event) {
-    	Runtime.getRuntime().addShutdownHook(new Thread(() -> ConfigManager.save()));
+    	Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+    		tae.cosmetics.settings.Setting.save();
+    		Keybind.save();
+    		PlayerAlert.save();
+    		GuiCancelPackets.save();
+    	}));
     }
     
     private static void changeMainMenu() {

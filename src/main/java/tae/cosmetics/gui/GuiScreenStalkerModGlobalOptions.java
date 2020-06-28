@@ -5,21 +5,16 @@ import java.io.IOException;
 
 import org.lwjgl.input.Keyboard;
 
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSlider;
 import net.minecraft.client.gui.GuiPageButtonList.GuiResponder;
 import net.minecraft.client.gui.GuiSlider.FormatHelper;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
 import tae.cosmetics.mods.QueuePeekMod;
 import tae.cosmetics.util.API2b2tdev;
 import tae.cosmetics.util.PlayerAlert;
 
 public class GuiScreenStalkerModGlobalOptions extends AbstractTAEGuiScreen {
-
-	private static final ResourceLocation PLAYER_OPTIONS = new ResourceLocation("taecosmetics","textures/gui/playeroptions.png");
 
 	private GuiButton toggleAlertOn;
 	private GuiButton toggleAlertOff;
@@ -57,7 +52,7 @@ public class GuiScreenStalkerModGlobalOptions extends AbstractTAEGuiScreen {
 			public void setEntryValue(int id, String value) {				
 			}
 			
-		}, 6, 200, 110, "TEST", 0, 60, QueuePeekMod.minutes, new FormatHelper()  {
+		}, 6, 200, 110, "TEST", 0, 60, QueuePeekMod.minutes.getValue(), new FormatHelper()  {
 
 			@Override
 			public String getText(int id, String name, float value) {
@@ -99,7 +94,7 @@ public class GuiScreenStalkerModGlobalOptions extends AbstractTAEGuiScreen {
 	
 	@Override
 	public void onGuiClosed() {
-		QueuePeekMod.minutes = (int)updateQueueTimer.getSliderValue();
+		QueuePeekMod.minutes.setValue((int)updateQueueTimer.getSliderValue());
 		Keyboard.enableRepeatEvents(false);
 	}
 	

@@ -1,21 +1,53 @@
 package tae.cosmetics.util;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
-import net.minecraft.util.text.TextComponentString;
 import tae.cosmetics.ColorCode;
 import tae.cosmetics.Globals;
 
 public class PlayerAlert implements Globals{
+			
+	private static final String fileName = "playeralerts.txt";
 	
-	private static HashMap<String, PlayerData> playeruuidmap = new HashMap<String, PlayerData>();
+	private static HashMap<String, PlayerData> playeruuidmap = new HashMap<>();
+	
+	static {
+		FileHelper.createFile(fileName);
+		load();
+	}
+		
+	public static void save() {
+		StringBuilder builder = new StringBuilder();
+		for(String uuid : playeruuidmap.keySet()) {
+			PlayerData data = playeruuidmap.get(uuid);
+			char keylength = (char) (32 + uuid.length());
+			char namelength = (char) (32 + data.oldname.length());
+			char prefixlength = (char) (32 + data.chatPrefix.length());
+			builder.append(keylength).append(namelength).append(prefixlength).append(uuid).append(data.oldname).append(data.chatPrefix)
+			.append(data.alert ? 1 : 0).append(data.queue ? 1 : 0).append(data.assumePrio ? 1 : 0).append("\n");
+		}
+		FileHelper.overwriteFile(fileName, builder.toString());
+	}
+	
+	private static void load() {
+		for(String s : FileHelper.readFile(fileName)) {
+			int firstlength = s.charAt(0) - 32;
+			int secondlength = s.charAt(1) - 32;
+			int thirdlength = s.charAt(2) - 32;
+			
+			String first = s.substring(3,firstlength+3);
+			String second = s.substring(firstlength+3,secondlength + firstlength + 3);
+			String third = s.substring(secondlength + firstlength + 3, thirdlength + secondlength + firstlength + 3);
+			String alertbool = s.substring(thirdlength + secondlength + firstlength + 3, thirdlength + secondlength + firstlength + 4);
+			String queuebool = s.substring(thirdlength + secondlength + firstlength + 4, thirdlength + secondlength + firstlength + 5);
+			String prio = s.substring(thirdlength + secondlength + firstlength + 5, thirdlength + secondlength + firstlength + 6);
+			
+			addFromConfig(first, second, third, alertbool.equals("1") ? true : false, queuebool.equals("1") ? true : false, prio.equals("1") ? true : false);
+			
+		}
+	}
 	
 	public static Set<String> getUUIDs() {
 		return playeruuidmap.keySet();
@@ -50,7 +82,7 @@ public class PlayerAlert implements Globals{
 	}
 	
 	
-	public static void addFromConfig(String uuid, String name, String prefix, boolean alert, boolean queue, boolean assumePrio) {
+	private static void addFromConfig(String uuid, String name, String prefix, boolean alert, boolean queue, boolean assumePrio) {
 		playeruuidmap.put(uuid, new PlayerData(uuid, name, prefix, alert, queue, assumePrio));
 	}
 	

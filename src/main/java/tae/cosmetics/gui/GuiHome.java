@@ -11,10 +11,15 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import tae.cosmetics.gui.util.GuiSetKeybind;
-import tae.cosmetics.mods.BaseMod;
+import tae.cosmetics.settings.Keybind;
 
 public class GuiHome extends GuiScreen {
 
+	
+	public static final Keybind openGui = new Keybind("Open Home Menu", Keyboard.KEY_BACKSLASH, () -> {
+		AbstractTAEGuiScreen.displayScreen(instance());
+	});
+	
 	private static final ResourceLocation BACKGROUND = new ResourceLocation("taecosmetics","textures/gui/playeroptions.png");
 	
 	private GuiButton openBookMod;
@@ -70,7 +75,7 @@ public class GuiHome extends GuiScreen {
 			*/	
 		if(stalkerModKey == null ) {        	
         	
-        	stalkerModKey = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, BaseMod.getKey(1));
+        	stalkerModKey = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, GuiScreenStalkerMod.openGui.getInt());
         	stalkerModKey.setTextColor(-1);
         	stalkerModKey.setDisabledTextColour(-1);
         	stalkerModKey.setEnableBackgroundDrawing(true);
@@ -80,7 +85,7 @@ public class GuiHome extends GuiScreen {
 		
 		if(timestampModKey == null ) {        	
         	
-        	timestampModKey = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, BaseMod.getKey(2));
+        	timestampModKey = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, GuiTimestampMod.openGui.getInt());
         	timestampModKey.setTextColor(-1);
         	timestampModKey.setDisabledTextColour(-1);
         	timestampModKey.setEnableBackgroundDrawing(true);
@@ -89,7 +94,7 @@ public class GuiHome extends GuiScreen {
 		}
 		
 		if(home == null) {
-			home = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, BaseMod.getKey(3));
+			home = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, openGui.getInt());
         	home.setTextColor(-1);
         	home.setDisabledTextColour(-1);
         	home.setEnableBackgroundDrawing(true);
@@ -106,12 +111,12 @@ public class GuiHome extends GuiScreen {
 
 		//BaseMod.setBind(0, bookModKey.getKeyCode());
 		
-		BaseMod.setBind(1, stalkerModKey.getKeyCode());
+		GuiScreenStalkerMod.openGui.updateBinding(stalkerModKey.getKeyCode());
 		
-		BaseMod.setBind(2, timestampModKey.getKeyCode());
+		GuiTimestampMod.openGui.updateBinding(timestampModKey.getKeyCode());
 		
-		BaseMod.setBind(3, home.getKeyCode());
-				
+		openGui.updateBinding(home.getKeyCode());
+						
 		mc.gameSettings.saveOptions();
 		
 	}
@@ -143,10 +148,7 @@ public class GuiHome extends GuiScreen {
 	
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if(false) {
-		//if (bookModKey.textboxKeyTyped(typedChar, keyCode)) {
-			
-        } else if (stalkerModKey.textboxKeyTyped(typedChar, keyCode)) {
+		if (stalkerModKey.textboxKeyTyped(typedChar, keyCode)) {
 			
         } else if (timestampModKey.textboxKeyTyped(typedChar, keyCode)) {
 			
@@ -164,10 +166,7 @@ public class GuiHome extends GuiScreen {
 		
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 	
-		if(false) {
-		//if(bookModKey.mouseClicked(mouseX, mouseY, mouseButton)) {
-			
-		} else if(stalkerModKey.mouseClicked(mouseX, mouseY, mouseButton)) {
+		if(stalkerModKey.mouseClicked(mouseX, mouseY, mouseButton)) {
 			
 		} else if(timestampModKey.mouseClicked(mouseX, mouseY, mouseButton)) {
 			

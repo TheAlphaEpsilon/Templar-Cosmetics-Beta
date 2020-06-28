@@ -11,7 +11,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import tae.cosmetics.gui.util.GuiSetKeybind;
-import tae.cosmetics.mods.BaseMod;
+import tae.cosmetics.mods.CancelPacketMod;
+import tae.cosmetics.mods.VisualizePacketsMod;
 
 public class Gui2b2tcp extends GuiScreen {
 
@@ -55,7 +56,7 @@ public class Gui2b2tcp extends GuiScreen {
 		buttonList.add(back);
 		
 		if(cancelPacketKeybind == null) {
-			cancelPacketKeybind = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, BaseMod.getKey(6));
+			cancelPacketKeybind = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, CancelPacketMod.toggle.getInt());
 			cancelPacketKeybind.setTextColor(-1);
 			cancelPacketKeybind.setDisabledTextColour(-1);
 			cancelPacketKeybind.setEnableBackgroundDrawing(true);
@@ -63,7 +64,7 @@ public class Gui2b2tcp extends GuiScreen {
 		}
 		
 		if(trackpackets == null) {
-			trackpackets = new GuiSetKeybind(1, fontRenderer, 0, 0, 12, BaseMod.getKey(7));
+			trackpackets = new GuiSetKeybind(1, fontRenderer, 0, 0, 12, VisualizePacketsMod.toggle.getInt());
 			trackpackets.setTextColor(-1);
 			trackpackets.setDisabledTextColour(-1);
 			trackpackets.setEnableBackgroundDrawing(true);
@@ -71,7 +72,7 @@ public class Gui2b2tcp extends GuiScreen {
 		}
 		
 		if(createmarker == null) {
-			createmarker = new GuiSetKeybind(2, fontRenderer, 0, 0, 12, BaseMod.getKey(8));
+			createmarker = new GuiSetKeybind(2, fontRenderer, 0, 0, 12, VisualizePacketsMod.addMarker.getInt());
 			createmarker.setTextColor(-1);
 			createmarker.setDisabledTextColour(-1);
 			createmarker.setEnableBackgroundDrawing(true);
@@ -84,10 +85,10 @@ public class Gui2b2tcp extends GuiScreen {
 		super.onGuiClosed();
 		Keyboard.enableRepeatEvents(false);
 
-		BaseMod.setBind(6, cancelPacketKeybind.getKeyCode());
-		BaseMod.setBind(7, trackpackets.getKeyCode());
-		BaseMod.setBind(8, createmarker.getKeyCode());
-		
+		CancelPacketMod.toggle.updateBinding(cancelPacketKeybind.getKeyCode());
+		VisualizePacketsMod.toggle.updateBinding(trackpackets.getKeyCode());
+		VisualizePacketsMod.toggle.updateBinding(createmarker.getKeyCode());
+	
 		mc.gameSettings.saveOptions();
 	}
 	

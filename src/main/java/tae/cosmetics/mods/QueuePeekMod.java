@@ -2,20 +2,21 @@ package tae.cosmetics.mods;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import tae.cosmetics.settings.Setting;
 import tae.cosmetics.util.API2b2tdev;
 import tae.cosmetics.util.PlayerAlert;
 import tae.cosmetics.util.RebaneGetter;
 
 public class QueuePeekMod extends BaseMod {
 	
-	public static boolean update = true;
-	public static int minutes = 10;
-	public static int tick = 0;
+	public static Setting<Boolean> update = new Setting<>("Update queue", true);
+	public static Setting<Integer> minutes = new Setting<>("Minutes between updates", 2);
+	private static int tick = 0;
 	
 	@SubscribeEvent
 	public void tickEvent(TickEvent.ClientTickEvent event) {
-		if(update && event.phase == TickEvent.Phase.END) {
-			if(minutes > 0 && tick++ > minutes * 1200) {
+		if((boolean)update.getValue() && event.phase == TickEvent.Phase.END) {
+			if((int)minutes.getValue() > 0 && tick++ > (int)minutes.getValue() * 1200) {
 				tick = 0;
 				
 				initAndUpdate();

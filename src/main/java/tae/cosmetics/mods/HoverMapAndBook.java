@@ -2,10 +2,6 @@ package tae.cosmetics.mods;
 
 import java.awt.Color;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.block.material.MapColor;
@@ -19,20 +15,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemWrittenBook;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.ColorCode;
-import tae.cosmetics.exceptions.TAEModException;
 import tae.cosmetics.gui.GuiBookTitleMod;
+import tae.cosmetics.settings.Keybind;
+import tae.cosmetics.settings.Setting;
 import tae.cosmetics.util.PlayerUtils;
 
 public class HoverMapAndBook extends BaseMod {
@@ -42,23 +35,27 @@ public class HoverMapAndBook extends BaseMod {
 	 * 17 April 2020
 	 */
 	
+	public static final Keybind keybind = new Keybind("Map and Book Hover", 0, () -> {
+		
+	});
+	
 	private static final int backgroundColor = new Color(203, 188, 147).getRGB();
 
 	private static BookRenderer toRender = null;
 	
 	private static boolean keyWasDown = false;
 	
-	private static double scale = 4;
+	private static Setting<Double> bookandmapscalevalue = new Setting<>("Book and map scale", 4D);
 	
 	public static void updateScale(double s) {
-		scale = s;
+		bookandmapscalevalue.setValue(s);
 		if(toRender != null) {
 			toRender.scale = s;
 		}
 	}
 	
 	public static int getScale() {
-		return (int) scale;
+		return (int)(double)bookandmapscalevalue.getValue();
 	}
 	
 	//Cancel normal tooltips
@@ -66,7 +63,7 @@ public class HoverMapAndBook extends BaseMod {
 	public void onHover(RenderTooltipEvent.Pre event) {
 		Item item = event.getStack().getItem();
 				
-		if(!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer) || Minecraft.getMinecraft().currentScreen instanceof GuiBookTitleMod || !Keyboard.isKeyDown(BaseMod.getHoverKey())) {
+		if(!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer) || Minecraft.getMinecraft().currentScreen instanceof GuiBookTitleMod || !keybind.isDownOverride()) {
 			return;
 		} else if(item != null && (item instanceof ItemMap || item instanceof ItemWrittenBook)) {
 			event.setCanceled(true);
@@ -76,7 +73,7 @@ public class HoverMapAndBook extends BaseMod {
 	//To draw new gui
 	@SubscribeEvent
 	public void drawNewGui(GuiScreenEvent.DrawScreenEvent.Post event) {
-		if(!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer) || Minecraft.getMinecraft().currentScreen instanceof GuiBookTitleMod || !Keyboard.isKeyDown(BaseMod.getHoverKey())) {
+		if(!(Minecraft.getMinecraft().currentScreen instanceof GuiContainer) || Minecraft.getMinecraft().currentScreen instanceof GuiBookTitleMod || !keybind.isDownOverride()) {
 			keyWasDown = false;
 			return;
 		}
@@ -107,7 +104,7 @@ public class HoverMapAndBook extends BaseMod {
 			} else if(item instanceof ItemWrittenBook) {
 				
 				if(toRender == null || (toRender != null && !toRender.isNBTSame(hovered.getStack().getTagCompound()))) {
-					toRender = new BookRenderer(hovered.getStack(), 100, 10, scale);
+					toRender = new BookRenderer(hovered.getStack(), 100, 10, (double)bookandmapscalevalue.getValue());
 				} 
 				toRender.draw(event.getMouseX(), event.getMouseY());
 			}
@@ -118,10 +115,10 @@ public class HoverMapAndBook extends BaseMod {
 	//Draws the map on screen
 	private void drawMap(ItemStack mapStack, ItemMap map, int x, int y) {
 				
-		x = (int) (x * (8 / scale) + 5);
-		y = (int) (y * (8 / scale) - 128);
+		x = (int) (x * (8 / (double)bookandmapscalevalue.getValue()) + 5);
+		y = (int) (y * (8 / (double)bookandmapscalevalue.getValue()) - 128);
 		
-		GlStateManager.scale(scale / 8, scale / 8, scale / 8);
+		GlStateManager.scale((double)bookandmapscalevalue.getValue() / 8, (double)bookandmapscalevalue.getValue() / 8, (double)bookandmapscalevalue.getValue() / 8);
 		
 		Gui.drawRect(x - 1, y - 1, x + 129, y + 129, Color.BLACK.getRGB());
 		Gui.drawRect(x, y, x + 128, y + 128, backgroundColor);
@@ -144,7 +141,7 @@ public class HoverMapAndBook extends BaseMod {
 	        }
 		}
 		
-		GlStateManager.scale(8 / scale, 8 / scale, 8 / scale);
+		GlStateManager.scale(8 / (double)bookandmapscalevalue.getValue(), 8 / (double)bookandmapscalevalue.getValue(), 8 / (double)bookandmapscalevalue.getValue());
 		
 	}
 	
@@ -158,7 +155,7 @@ public class HoverMapAndBook extends BaseMod {
 		
 		private static final FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		
-		private static final int outlineColor = new Color(153, 135, 108).getRGB();
+		//private static final int outlineColor = new Color(153, 135, 108).getRGB();
 				
 		/**
 		 * space between text and metadata
@@ -173,11 +170,11 @@ public class HoverMapAndBook extends BaseMod {
 		private int padding;
 		private double scale;
 		private Generation gen;
-		private String nbtString;
+		//private String nbtString;
 		
 		private BookRenderer(ItemStack bookStack, int width, int padding, double scale) {
 			this.nbt = bookStack.getTagCompound();
-			this.nbtString = nbt.toString();
+			//this.nbtString = nbt.toString();
 			author = nbt.getString("author");
 			title = nbt.getString("title");
 			pages = getPageText(nbt);

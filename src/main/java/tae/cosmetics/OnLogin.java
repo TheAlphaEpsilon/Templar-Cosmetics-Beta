@@ -12,6 +12,7 @@ import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.exceptions.TAEModException;
+import tae.cosmetics.gui.GuiHome;
 import tae.cosmetics.mods.BaseMod;
 import tae.cosmetics.util.PlayerAlert;
 import tae.cosmetics.util.PlayerUtils;
@@ -56,7 +57,7 @@ public class OnLogin implements Globals {
 			if(sendHelp && firstJoin) {
 				firstJoin = false;
 				PlayerUtils.sendMessage("Thank you for using TEMPLAR cosmetics pack!",ColorCode.GREEN,ColorCode.ITALIC, ColorCode.BOLD);
-				PlayerUtils.sendMessage("Press " + Keyboard.getKeyName(BaseMod.getKey(3)) + " to open the gui",ColorCode.GREEN,ColorCode.ITALIC);
+				PlayerUtils.sendMessage("Press " + Keyboard.getKeyName(GuiHome.openGui.getInt()) + " to open the gui",ColorCode.GREEN,ColorCode.ITALIC);
 			}
 			
 			for(TAEModException exception : exceptions) {

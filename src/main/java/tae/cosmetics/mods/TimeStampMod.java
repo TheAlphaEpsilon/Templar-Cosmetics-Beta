@@ -7,22 +7,24 @@ import net.minecraft.network.play.server.SPacketChat;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.ColorCode;
+import tae.cosmetics.settings.Setting;
 import tae.packetevent.PacketEvent;
 
 public class TimeStampMod extends BaseMod {
 	
-	public static boolean enabled = true;
-	public static boolean hour24 = true;
-	public static boolean noDate = true;
-	
-	public static boolean nobold = true;
-	public static boolean noitalic = true;
-	public static boolean nounderline = true;
-	public static ColorCode code = ColorCode.WHITE;
+	public static Setting<Boolean> enabled = new Setting<>("TSEnabled", false);
+	public static Setting<Boolean> hour24 = new Setting<>("TS24 Hours", true);
+	public static Setting<Boolean> date = new Setting<>("TSDate", false);
+
+	public static Setting<Boolean> bold = new Setting<>("TSBold", false);
+	public static Setting<Boolean> italic = new Setting<>("TSItalic", false);
+	public static Setting<Boolean> underline = new Setting<>("TSUnderline", false);
+
+	public static Setting<ColorCode> code = new Setting<>("TSColor Code", ColorCode.WHITE);
 	
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void getChatEvent(PacketEvent.Incoming event) {
-		if(enabled && event.getPacket() instanceof SPacketChat) {			
+		if(enabled.getValue() && event.getPacket() instanceof SPacketChat) {			
 			SPacketChat packet = (SPacketChat) event.getPacket();
 			
 			sendMessage(getFormattedTimeAsString() + " " + packet.getChatComponent().getFormattedText());
@@ -41,23 +43,23 @@ public class TimeStampMod extends BaseMod {
 		int month = now.getMonth() + 1;
 		int day = now.getDate();
 		
-		String time = code.getCode();
+		String time = code.getValue().getCode();
 		
-		if(!nobold) {
+		if(bold.getValue()) {
 			time += ColorCode.BOLD.getCode();
 		}
 		
-		if(!noitalic) {
+		if(italic.getValue()) {
 			time += ColorCode.ITALIC.getCode();
 		}
 		
-		if(!nounderline) {
+		if(underline.getValue()) {
 			time += ColorCode.UNDERLINE.getCode();
 		}
 		
 		time += "[";
 		
-		if(!noDate) {
+		if(date.getValue()) {
 			time += "<" + day + "/";
 			time += month +"/";
 			time += year+"> ";
@@ -65,7 +67,7 @@ public class TimeStampMod extends BaseMod {
 		
 		String ampm = "";
 		boolean addampm = false;
-		if(hour24) {
+		if(hour24.getValue()) {
 			if(hours < 10) time += "0";
 			time += hours+":";
 		} else {

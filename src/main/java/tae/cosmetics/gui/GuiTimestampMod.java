@@ -14,8 +14,13 @@ import tae.cosmetics.gui.util.GuiOnOffButton;
 import tae.cosmetics.mods.TimeStampMod;
 import tae.cosmetics.mods.UnicodeKeyboard;
 import tae.cosmetics.mods.UnicodeKeyboard.TextType;
+import tae.cosmetics.settings.Keybind;
 
 public class GuiTimestampMod extends GuiScreen {
+
+	public static final Keybind openGui = new Keybind("Open Timestamp Mod",0, () -> {
+		AbstractTAEGuiScreen.displayScreen(instance());
+	});
 
 	private static final ResourceLocation TIMESTAMP_GUI = new ResourceLocation("taecosmetics","textures/gui/timestamp.png");
 	
@@ -47,13 +52,13 @@ public class GuiTimestampMod extends GuiScreen {
 	}
 	
 	private GuiTimestampMod() {
-		date = new GuiOnOffButton(0, 0, 0, 80, 20, "Date: ", !TimeStampMod.noDate);
-		hour24 = new GuiOnOffButton(1, 0, 0, 80, 20, "24 Hour: ", TimeStampMod.hour24);
-		enabled = new GuiOnOffButton(2, 0, 0, 80, 20, "Enabled: ", TimeStampMod.enabled);
+		date = new GuiOnOffButton(0, 0, 0, 80, 20, "Date: ", TimeStampMod.date.getValue());
+		hour24 = new GuiOnOffButton(1, 0, 0, 80, 20, "24 Hour: ", TimeStampMod.hour24.getValue());
+		enabled = new GuiOnOffButton(2, 0, 0, 80, 20, "Enabled: ", TimeStampMod.enabled.getValue());
 		
-		bold = new GuiOnOffButton(3, 0, 0, 80, 20, "Bold: ", !TimeStampMod.nobold);
-		italic = new GuiOnOffButton(4, 0, 0, 80, 20, "Italic: ", !TimeStampMod.noitalic);
-		underline = new GuiOnOffButton(5, 0, 0, 80, 20, "Line: ", !TimeStampMod.nounderline);
+		bold = new GuiOnOffButton(3, 0, 0, 80, 20, "Bold: ", TimeStampMod.bold.getValue());
+		italic = new GuiOnOffButton(4, 0, 0, 80, 20, "Italic: ", TimeStampMod.italic.getValue());
+		underline = new GuiOnOffButton(5, 0, 0, 80, 20, "Line: ", TimeStampMod.underline.getValue());
 		
 		ArrayList<ColorCode> toList = new ArrayList<ColorCode>();
 		
@@ -65,7 +70,7 @@ public class GuiTimestampMod extends GuiScreen {
 			}
 		}
 		
-		colors = new GuiDisplayListButton<ColorCode>(6, 0, 0, 80, 20, toList, TimeStampMod.code);
+		colors = new GuiDisplayListButton<ColorCode>(6, 0, 0, 80, 20, toList, TimeStampMod.code.getValue());
 		
 	}
 	
@@ -93,19 +98,19 @@ public class GuiTimestampMod extends GuiScreen {
 		}
 		
 		if(button == date) {
-			TimeStampMod.noDate = !date.getState();
+			TimeStampMod.date.setValue(date.getState());
 		} else if(button == hour24) {
-			TimeStampMod.hour24 = hour24.getState();
+			TimeStampMod.hour24.setValue(hour24.getState());
 		} else if(button == enabled) {
-			TimeStampMod.enabled = enabled.getState();
+			TimeStampMod.enabled.setValue(enabled.getState());
 		} else if(button == bold) {
-			TimeStampMod.nobold = !bold.getState();
+			TimeStampMod.bold.setValue(bold.getState());
 		} else if(button == italic) {
-			TimeStampMod.noitalic = !italic.getState();
+			TimeStampMod.italic.setValue(italic.getState());
 		} else if(button == underline) {
-			TimeStampMod.nounderline = !underline.getState();
+			TimeStampMod.underline.setValue(underline.getState());
 		} else if(button == colors) {
-			TimeStampMod.code = colors.getValue();
+			TimeStampMod.code.setValue(colors.getValue());
 		}
 	}
 	

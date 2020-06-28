@@ -5,11 +5,20 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.gui.GuiCancelPackets;
 import tae.cosmetics.gui.util.mainscreen.CancelPacketsGuiList;
+import tae.cosmetics.settings.Keybind;
+import tae.cosmetics.settings.Setting;
 import tae.packetevent.PacketEvent;
 
 public class CancelPacketMod extends BaseMod {
 	
-	private static CancelPacketsGuiList gui = new CancelPacketsGuiList("Canceling Packets:", 50, 50);
+	public static final Keybind toggle = new Keybind("Toggle Cancel Packets",0, () -> {
+		toggle();
+	});
+	
+	private static Setting<Integer> xCoord = new Setting<>("Cancel Packets X Coord", 50);
+	private static Setting<Integer> yCoord = new Setting<>("Cancel Packets Y Coord", 50);
+	
+	private static CancelPacketsGuiList gui = new CancelPacketsGuiList("Canceling Packets:", (int)xCoord.getValue(), (int)yCoord.getValue());
 	
 	public static boolean enabled = false;
 	
@@ -22,6 +31,8 @@ public class CancelPacketMod extends BaseMod {
 	}
 	
 	public static void updateGui(int x, int y) {
+		xCoord.setValue(x);
+		yCoord.setValue(y);
 		gui.x = x;
 		gui.y = y;
 	}

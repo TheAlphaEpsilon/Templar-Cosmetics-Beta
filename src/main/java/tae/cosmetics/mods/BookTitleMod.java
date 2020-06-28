@@ -16,18 +16,16 @@ public class BookTitleMod extends BaseMod {
 		
 	@SubscribeEvent
 	public void onSendPacket(PacketEvent.Outgoing event) {
-				
 		//dont send click packets from booktitle gui
 		if(mc.currentScreen != null && mc.currentScreen instanceof GuiBookTitleMod && event.getPacket() instanceof CPacketClickWindow) {
 			event.setCanceled(true);
 		}
-		
 		//handle gui
 		if(event.getPacket() instanceof CPacketCustomPayload && ((CPacketCustomPayload)event.getPacket()).getChannelName().equals("TAE|BSign")) {
 			CPacketCustomPayload packet = (CPacketCustomPayload) event.getPacket();
 			event.setPacket(new CPacketCustomPayload("MC|BSign",packet.getBufferData()));
 		}
-		
+
 		if(event.getPacket() instanceof CPacketCustomPayload && ((CPacketCustomPayload)event.getPacket()).getChannelName().equals("MC|ItemName")) {
 			CPacketCustomPayload packet = (CPacketCustomPayload) event.getPacket();
 			String s = "\u00a7" + packet.getBufferData().readString(32767);

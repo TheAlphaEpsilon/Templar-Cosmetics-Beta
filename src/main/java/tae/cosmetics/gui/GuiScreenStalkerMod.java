@@ -25,11 +25,17 @@ import net.minecraft.network.play.client.CPacketTabComplete;
 import net.minecraft.util.ResourceLocation;
 import tae.cosmetics.gui.util.GuiSignature;
 import tae.cosmetics.gui.util.ScrollBar;
+import tae.cosmetics.settings.Keybind;
 import tae.cosmetics.util.MojangGetter;
 import tae.cosmetics.util.PlayerAlert;
 
 public class GuiScreenStalkerMod extends AbstractTAEGuiScreen {
-
+	
+	
+	public static final Keybind openGui = new Keybind("Open Stalker Mod",0, () -> {
+		displayScreen(new GuiScreenStalkerMod(GuiHome.instance()));
+	});
+	
 	private static final ResourceLocation STALKER_MOD_GUI = new ResourceLocation("taecosmetics","textures/gui/playeralert.png");
 	private static final ResourceLocation DEFAULT_SKIN = new ResourceLocation("textures/entity/steve.png");
 	
