@@ -53,7 +53,7 @@ public abstract class AbstractTAEGuiScreen extends GuiScreen {
 			Gui.drawScaledCustomSizeModalRect(i - guiwidth / 2, j - guiheight / 2, 0, 0, 242, 192, guiwidth, guiheight, 256, 256);	
 		}
 		
-		drawScreen0(mouseY, mouseY, partialTicks);
+		drawScreen0(mouseX, mouseY, partialTicks);
 		
 		messagesToDraw.forEach(x -> x.draw());
 				

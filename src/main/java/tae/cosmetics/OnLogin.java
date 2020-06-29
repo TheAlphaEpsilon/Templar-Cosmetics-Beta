@@ -2,17 +2,21 @@ package tae.cosmetics;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import org.lwjgl.input.Keyboard;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.exceptions.TAEModException;
 import tae.cosmetics.gui.GuiHome;
+import tae.cosmetics.gui.util.GuiOnOffButton;
 import tae.cosmetics.mods.BaseMod;
 import tae.cosmetics.util.PlayerAlert;
 import tae.cosmetics.util.PlayerUtils;
@@ -74,17 +78,17 @@ public class OnLogin implements Globals {
 	public void mainTitle(InitGuiEvent.Post event) {
 		if(event.getGui() instanceof GuiMainMenu) {
 				
-				GuiMainMenu menu = (GuiMainMenu) event.getGui();
+			GuiMainMenu menu = (GuiMainMenu) event.getGui();
 				
-				if(rand.nextInt() % 10 == 0) {	
-					try {
-						splashText.set(menu, texts[rand.nextInt(texts.length)]);
-					} catch (IllegalArgumentException | IllegalAccessException e) {
-						addError(new TAEModException(e.getClass(), e.getMessage()));
-					}
-					
+			if(rand.nextInt() % 10 == 0) {	
+				try {
+					splashText.set(menu, texts[rand.nextInt(texts.length)]);
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					addError(new TAEModException(e.getClass(), e.getMessage()));
 				}
-						
+					
+			}
+				
 		}
 	}
 	

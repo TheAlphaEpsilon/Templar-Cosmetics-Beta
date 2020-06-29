@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import tae.cosmetics.exceptions.TAEModException;
-import tae.cosmetics.mods.PearlTracking;
 
 public class FileHelper {
 	
@@ -23,7 +22,7 @@ public class FileHelper {
 		try {
 			file.createNewFile();
 		} catch (Exception e) {
-			new TAEModException(PearlTracking.class, "Couldn't create " + fileName + " : " + e.getMessage()).post();
+			new TAEModException(FileHelper.class, "Couldn't create " + fileName + " : " + e.getMessage()).post();
 		}
 		
 	}
@@ -36,7 +35,7 @@ public class FileHelper {
 			writer.write(toWrite);
 			writer.close();
 		} catch (Exception e) {
-			new TAEModException(PearlTracking.class, "Couldn't write " + fileName + " : " + e.getMessage()).post();
+			new TAEModException(FileHelper.class, "Couldn't write " + fileName + " : " + e.getMessage()).post();
 
 		}
 	}
@@ -55,9 +54,33 @@ public class FileHelper {
 			writer.write(builder.toString());
 			writer.close();
 		} catch (Exception e) {
-			new TAEModException(PearlTracking.class, "Couldn't write " + fileName + " : " + e.getMessage()).post();
+			new TAEModException(FileHelper.class, "Couldn't write " + fileName + " : " + e.getMessage()).post();
 
 		}
+	}
+	
+	public static String readRaw(String fileName) {
+		
+		File file = new File(dir+"/"+fileName);
+		
+		try {
+			Scanner scanner = new Scanner(file);
+			
+			StringBuilder builder = new StringBuilder();
+			
+			while(scanner.hasNextLine()) {
+				builder.append(scanner.nextLine());
+			}
+			
+			scanner.close();
+			
+			return builder.toString();
+			
+		} catch (Exception e) {
+			new TAEModException(FileHelper.class, "Couldn't read " + fileName + " : " + e.getMessage()).post();
+			return "";
+		}
+		
 	}
 	
 	public static ArrayList<String> readFile(String fileName){		
@@ -78,7 +101,7 @@ public class FileHelper {
 			return toReturn;
 			
 		} catch (Exception e) {
-			new TAEModException(PearlTracking.class, "Couldn't read " + fileName + " : " + e.getMessage()).post();
+			new TAEModException(FileHelper.class, "Couldn't read " + fileName + " : " + e.getMessage()).post();
 			return new ArrayList<String>();
 		}
 		

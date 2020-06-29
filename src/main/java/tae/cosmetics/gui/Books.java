@@ -11,10 +11,6 @@ import tae.cosmetics.settings.Keybind;
 public class Books extends AbstractTAEGuiScreen {
 	
 	private static GuiScreen instance = new Books(GuiHome.instance());
-	
-	public static final Keybind openBookArtGui = new Keybind("Open Book Art Mod",0, () -> {
-		displayScreen(new BookArt(instance));
-	});
 
 	private GuiButton openBookMod;
 	private GuiButton openBookArt;
@@ -60,7 +56,7 @@ public class Books extends AbstractTAEGuiScreen {
 		
 		if(bookArtKey == null ) {        	
         	
-        	bookArtKey = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, openBookArtGui.getInt());
+        	bookArtKey = new GuiSetKeybind(0, fontRenderer, 0, 0, 12, GuiHome.openBookArtGui.getInt());
         	bookArtKey.setTextColor(-1);
         	bookArtKey.setDisabledTextColour(-1);
         	bookArtKey.setEnableBackgroundDrawing(true);
@@ -84,7 +80,7 @@ public class Books extends AbstractTAEGuiScreen {
 	@Override
 	public void onGuiClosed() {
 		GuiBookTitleMod.openGui.updateBinding(bookModKey.getKeyCode());
-		openBookArtGui.updateBinding(bookArtKey.getKeyCode());
+		GuiHome.openBookArtGui.updateBinding(bookArtKey.getKeyCode());
 		
 		mc.gameSettings.saveOptions();
 	}

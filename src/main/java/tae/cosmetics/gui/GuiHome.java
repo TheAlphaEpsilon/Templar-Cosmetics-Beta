@@ -10,6 +10,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import tae.cosmetics.TAECosmetics;
+import tae.cosmetics.gui.util.GuiOnOffButton;
 import tae.cosmetics.gui.util.GuiSetKeybind;
 import tae.cosmetics.settings.Keybind;
 
@@ -20,6 +22,10 @@ public class GuiHome extends GuiScreen {
 		AbstractTAEGuiScreen.displayScreen(instance());
 	});
 	
+	public static final Keybind openBookArtGui = new Keybind("Open Book Art Mod",0, () -> {
+		AbstractTAEGuiScreen.displayScreen(new BookArt(new GuiHome()));
+	});
+	
 	private static final ResourceLocation BACKGROUND = new ResourceLocation("taecosmetics","textures/gui/playeroptions.png");
 	
 	private GuiButton openBookMod;
@@ -27,6 +33,8 @@ public class GuiHome extends GuiScreen {
 	private GuiButton openTimeStampMod;
 	private GuiButton open2b2tcp;
 	private GuiButton openMisc;
+	
+	private GuiOnOffButton toggleMenuBackground;
 	
 	//private GuiSetKeybind bookModKey = null;
 	private GuiSetKeybind stalkerModKey = null;
@@ -36,7 +44,7 @@ public class GuiHome extends GuiScreen {
 	private static final int guiwidth = 290;
 	private static final int guiheight = 200;
 		
-	private static GuiHome INSTANCE = null;
+	private static GuiHome INSTANCE = new GuiHome();
 	
 	private GuiHome() {
 		openBookMod = new GuiButton(0, 0, 0, 150, 20, "Open Book Utilities");
@@ -44,14 +52,16 @@ public class GuiHome extends GuiScreen {
 		openTimeStampMod = new GuiButton(2, 0, 0, 150, 20, "Open Timestamp Mod GUI");
 		open2b2tcp = new GuiButton(3, 0, 0, 150, 20, "2b2tcpdump");
 		openMisc = new GuiButton(4, 0, 0, 150, 20, "Misc");
+		
+		toggleMenuBackground = new GuiOnOffButton(5, 0, 0, 170, 20, "Toggle Menu Background: ", TAECosmetics.changeTitle.getValue());
 	}
 	
 	public static GuiHome instance() {
 		if(INSTANCE == null) {
-			return new GuiHome();
-		} else {
-			return INSTANCE;
-		}
+			INSTANCE = new GuiHome();
+		} 
+		return INSTANCE;
+		
 	}
 	
 	@Override
@@ -62,6 +72,8 @@ public class GuiHome extends GuiScreen {
 		buttonList.add(openTimeStampMod);
 		buttonList.add(open2b2tcp);
 		buttonList.add(openMisc);
+		
+		buttonList.add(toggleMenuBackground);
 		/*		
 		if(bookModKey == null ) {        	
         	
@@ -143,6 +155,9 @@ public class GuiHome extends GuiScreen {
 			mc.addScheduledTask(() -> {
 				mc.displayGuiScreen(new GuiMisc(this));
 			});
+		} else if(button == toggleMenuBackground) {
+			toggleMenuBackground.toggle();
+			TAECosmetics.changeTitle.setValue(toggleMenuBackground.getState());
 		}
 	}
 	
@@ -245,6 +260,9 @@ public class GuiHome extends GuiScreen {
 		
 		home.x = x - 10;
 		home.y = y + 54;
+		
+		toggleMenuBackground.x = x - 180;
+		toggleMenuBackground.y = y + 70;
 		
 	}
 	

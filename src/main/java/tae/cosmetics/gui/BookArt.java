@@ -21,9 +21,10 @@ import tae.cosmetics.ColorCode;
 import tae.cosmetics.gui.util.GuiOnOffButton;
 import tae.cosmetics.gui.util.GuiSignature;
 import tae.cosmetics.settings.Keybind;
+import tae.cosmetics.util.FileHelper;
 
 public class BookArt extends AbstractTAEGuiScreen {
-	
+		
 	private static final int bookWidth = 14; //height oops
 	private static final int bookHeight = 12; //width
 	
@@ -80,7 +81,7 @@ public class BookArt extends AbstractTAEGuiScreen {
 			}
 			counter++;
 		}
-	
+			
 	}
 	
     private static final ResourceLocation BOOK_GUI_TEXTURES = new ResourceLocation("textures/gui/book.png");
@@ -98,6 +99,9 @@ public class BookArt extends AbstractTAEGuiScreen {
 	private static GuiButton addPage;
 	
 	private static GuiButton clear;
+	
+	private static GuiButton save;
+	private static GuiButton load;
 	
 	private static GuiOnOffButton mode2b2t;
 	
@@ -123,6 +127,10 @@ public class BookArt extends AbstractTAEGuiScreen {
 		mode2b2t = new GuiOnOffButton(102, 0, 0, 130, 20, "2b2t mode: ", false);
 		
 		clear = new GuiButton(103, 0, 0, 40, 20, "Clear");
+		
+		save = new GuiButton(104, 0, 0, 40, 20, "Save");
+		load = new GuiButton(105, 0, 0, 40, 20, "Load");
+		
 	}
 
 	@Override
@@ -150,6 +158,9 @@ public class BookArt extends AbstractTAEGuiScreen {
 		
 		buttonList.add(clear);
 		
+		buttonList.add(save);
+		buttonList.add(load);
+		
 		super.initGui();
 		
 	}
@@ -164,7 +175,7 @@ public class BookArt extends AbstractTAEGuiScreen {
 	private void drawPseudoBook(int x, int y, int mouseX, int mouseY) {
 		this.mc.getTextureManager().bindTexture(BOOK_GUI_TEXTURES);
         this.drawTexturedModalRect(x, y - 192 / 2 + 6, 0, 0, 192, 192);
-        ITextComponent itextcomponent = ITextComponent.Serializer.jsonToComponent(updateText());
+        ITextComponent itextcomponent = ITextComponent.Serializer.jsonToComponent(updateText(shorten));
         List<ITextComponent> lines = GuiUtilRenderComponents.splitText(itextcomponent, 116, this.fontRenderer, true, true);
         int k1 = Math.min(128 / this.fontRenderer.FONT_HEIGHT, lines.size());
         for (int l1 = 0; l1 < k1; ++l1)
@@ -177,7 +188,12 @@ public class BookArt extends AbstractTAEGuiScreen {
        
 	}
 	
-	private static String updateText() {
+	public static void updatePixels(Pixel[][] other) {
+		updatePrevCache();
+		deepArrayCopy(pixels, other);
+	}
+	
+	private static String updateText(boolean shorten) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{\"text\":\"");
 		for(int i = 0; i < pixels.length; i++) {
@@ -358,7 +374,7 @@ public class BookArt extends AbstractTAEGuiScreen {
 				
 			} else if(button == addPage) {
 							
-				String text = updateText().replace("{\"text\":\"", "").replace("\"}", "").replace("\\n", "");
+				String text = updateText(false).replace("{\"text\":\"", "").replace("\"}", "").replace("\\n", "\n");
 				
 				//text = text.substring(0, 128);
 				
@@ -401,6 +417,17 @@ public class BookArt extends AbstractTAEGuiScreen {
 						pixels[i][j] = new Pixel();
 					}
 				}
+			} else if(button == save) {
+				
+				Pixel[][] toCopy = new Pixel[pixels.length][pixels[0].length];
+				deepArrayCopy(toCopy, pixels);
+				
+				displayScreen(new GuiBookArtSaveLoad(this, toCopy));
+				
+			} else if(button == load) {
+				
+				displayScreen(new GuiBookArtSaveLoad(this));
+				
 			}
 			
 		}
@@ -454,6 +481,12 @@ public class BookArt extends AbstractTAEGuiScreen {
 		clear.x = x - 160;
 		clear.y = y - 95 + 8 * 22;
 		
+		save.x = x - 100;
+		save.y = y - 100 + 6 * 22;
+		
+		load.x = x - 52;
+		load.y = y - 100 + 6 * 22;
+		
 	}
 	
 	static class Pixel {
@@ -466,6 +499,12 @@ public class BookArt extends AbstractTAEGuiScreen {
 			c = 0x2588;
 			code = ColorCode.BLACK;
 			format = ColorCode.RESET;
+		}
+		
+		public Pixel(char c, ColorCode color, ColorCode format) {
+			this.c = c;
+			code = color;
+			this.format = format;
 		}
 		
 		private Pixel(Pixel p) {
@@ -488,6 +527,18 @@ public class BookArt extends AbstractTAEGuiScreen {
 		
 		private String getPixel() {
 			return code.getCode() + (format == ColorCode.RESET ? "" : format.getCode()) + c;
+		}
+		
+		public int getChar() {
+			return c;
+		}
+		
+		public ColorCode getColor() {
+			return code;
+		}
+		
+		public ColorCode getFormat() {
+			return format;
 		}
 		
 		@Override
