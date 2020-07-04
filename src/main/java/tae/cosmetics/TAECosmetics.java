@@ -45,16 +45,7 @@ public class TAECosmetics implements Globals {
     	    	
     	RebaneGetter.init();
 		API2b2tdev.update();
-    	
-    	new Thread(() -> {
-    		GuiScreenStalkerMod.updateResourceMap();
-    		
-    		if(changeTitle.getValue()) {
-    			changeMainMenu();
-    		} 
-    		
-    	}).run();
-    	
+		
     	ModLoader ini = new ModLoader();
     	ini.searchPackage(modPath);
     	ini.init();
@@ -67,7 +58,17 @@ public class TAECosmetics implements Globals {
     		MinecraftForge.EVENT_BUS.register(new tae.packetevent.ChannelHandlerInput());
     		MinecraftForge.EVENT_BUS.register(new OnLogin());
     		MinecraftForge.EVENT_BUS.register(new KeybindListener());
+    		
+    		new Thread(() -> {
+        		
+        		if(changeTitle.getValue()) {
+        			changeMainMenu();
+        		} 
+        		
+        	}).run();
+        	
     	}
+    	
     }
     
     @EventHandler

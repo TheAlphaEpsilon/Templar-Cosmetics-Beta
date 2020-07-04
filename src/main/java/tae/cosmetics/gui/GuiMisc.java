@@ -13,6 +13,7 @@ import tae.cosmetics.mods.BaseMod;
 import tae.cosmetics.mods.ChatEncryption;
 import tae.cosmetics.mods.HoverMapAndBook;
 import tae.cosmetics.mods.PearlTracking;
+import tae.cosmetics.mods.ThrownEntityTrails;
 
 public class GuiMisc extends AbstractTAEGuiScreen {
 
@@ -20,6 +21,7 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 	private GuiOnOffButton showEncryptRaw;
 	
 	private GuiOnOffButton pearlLogging;
+	private GuiOnOffButton entitytrails;
 	
 	private GuiSetKeybind elytra = null;
 	private GuiSetKeybind hover = null;
@@ -33,6 +35,7 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 		sendEncrypt = new GuiOnOffButton(0, 0, 0, 135, 20, "Send Encrypted Chat ", ChatEncryption.enabled);
 		showEncryptRaw = new GuiOnOffButton(0, 0, 0, 135, 20, "Show Raw Text ", ChatEncryption.showRaw);
 		pearlLogging = new GuiOnOffButton(0, 0, 0, 135, 20, "Pearl Logging ", PearlTracking.enabled.getValue());
+		entitytrails = new GuiOnOffButton(0, 0, 0, 135, 20, "Entity Trails ", ThrownEntityTrails.enabled.getValue());
 		
 		ArrayList<Integer> list = new ArrayList<>();
 		for(int i = 1; i <= 16; i++) {
@@ -66,6 +69,7 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 		buttonList.add(sendEncrypt);
 		buttonList.add(showEncryptRaw);
 		buttonList.add(pearlLogging);
+		buttonList.add(entitytrails);
 		
 		buttonList.add(bookandmapscale);
 		
@@ -114,6 +118,8 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 				ChatEncryption.showRaw = ((GuiOnOffButton) button).getState();
 			} else if(button == pearlLogging) {
 				PearlTracking.enabled.setValue(((GuiOnOffButton) button).getState());
+			} else if(button == entitytrails) {
+				ThrownEntityTrails.enabled.setValue(((GuiOnOffButton) button).getState());
 			}
 			
 		} else if(button == bookandmapscale) {
@@ -170,6 +176,9 @@ public class GuiMisc extends AbstractTAEGuiScreen {
 		
 		pearlLogging.x = x - 100;
 		pearlLogging.y = y + 10;
+		
+		entitytrails.x = x -100;
+		entitytrails.y = y - 94;
 		
 		pearl.x = x + 70;
 		pearl.y = y + 10;

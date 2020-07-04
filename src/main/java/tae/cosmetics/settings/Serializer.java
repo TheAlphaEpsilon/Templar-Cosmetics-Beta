@@ -22,7 +22,7 @@ public class Serializer {
 			return stream.toByteArray();
 			
 		} catch (Exception e) {
-			new TAEModException(Setting.class, "Cannot serialize setting " + obj.toString() + ": " + e.getMessage()).post();
+			new TAEModException(Serializer.class, "Cannot serialize setting " + obj.toString() + ": " + e.getMessage()).post();
 			return new byte[0];
 		}
 	}
@@ -36,20 +36,30 @@ public class Serializer {
 			ois.close();
 			return obj;
 		} catch (Exception e) {
-			new TAEModException(Setting.class, "Cannot deserialize setting: " + e.getMessage()).post();
+			new TAEModException(Serializer.class, "Cannot deserialize setting: " + e.getMessage()).post();
 			return null;
 		}
 	}
 	
 	public static byte[] stringToBytes(String s) {
 		
-		return Base64.getDecoder().decode(s);
+		try{
+			return Base64.getDecoder().decode(s);
+		} catch (Exception e) {
+			new TAEModException(Serializer.class, "Cannot convert from B64: " + e.getMessage()).post();
+			return new byte[0];
+		}
 		
 	}
 	
 	public static String bytesToString(byte[] bytes) {
 		
-		return Base64.getEncoder().encodeToString(bytes);
+		try{
+			return Base64.getEncoder().encodeToString(bytes);
+		} catch (Exception e) {
+			new TAEModException(Serializer.class, "Cannot convert to B64: " + e.getMessage()).post();
+			return "";
+		}
 		
 	}
 	

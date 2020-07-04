@@ -1,6 +1,7 @@
 package tae.cosmetics.util;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -22,10 +23,26 @@ public class PlayerAlert implements Globals{
 		StringBuilder builder = new StringBuilder();
 		for(String uuid : playeruuidmap.keySet()) {
 			PlayerData data = playeruuidmap.get(uuid);
+			
+			StringBuilder prefixBuilder = new StringBuilder();
+			
+			for(int i : data.chatPrefix.toCharArray()) {
+				prefixBuilder.append(Integer.toString(i)).append(',');
+			}
+			
+			String chatPrefix = "";
+			
+			try {
+				chatPrefix = Base64.getEncoder().encodeToString(prefixBuilder.toString().getBytes());
+			} catch (Exception e) {
+				
+			}
+			
+		
 			char keylength = (char) (32 + uuid.length());
 			char namelength = (char) (32 + data.oldname.length());
-			char prefixlength = (char) (32 + data.chatPrefix.length());
-			builder.append(keylength).append(namelength).append(prefixlength).append(uuid).append(data.oldname).append(data.chatPrefix)
+			char prefixlength = (char) (32 + chatPrefix.length());
+			builder.append(keylength).append(namelength).append(prefixlength).append(uuid).append(data.oldname).append(chatPrefix)
 			.append(data.alert ? 1 : 0).append(data.queue ? 1 : 0).append(data.assumePrio ? 1 : 0).append("\n");
 		}
 		FileHelper.overwriteFile(fileName, builder.toString());
@@ -40,11 +57,28 @@ public class PlayerAlert implements Globals{
 			String first = s.substring(3,firstlength+3);
 			String second = s.substring(firstlength+3,secondlength + firstlength + 3);
 			String third = s.substring(secondlength + firstlength + 3, thirdlength + secondlength + firstlength + 3);
+			
+			String chatPrefix;
+			
+			StringBuilder prefixBuilder = new StringBuilder();
+			
+			try {
+				
+				String[] ints = new String(Base64.getDecoder().decode(third)).split(",");
+				for(String i : ints) {
+					prefixBuilder.append((char)Integer.parseInt(i));
+				}
+				chatPrefix = prefixBuilder.toString();
+				
+			} catch (Exception e) {
+				chatPrefix = "";
+			}
+			
 			String alertbool = s.substring(thirdlength + secondlength + firstlength + 3, thirdlength + secondlength + firstlength + 4);
 			String queuebool = s.substring(thirdlength + secondlength + firstlength + 4, thirdlength + secondlength + firstlength + 5);
 			String prio = s.substring(thirdlength + secondlength + firstlength + 5, thirdlength + secondlength + firstlength + 6);
 			
-			addFromConfig(first, second, third, alertbool.equals("1") ? true : false, queuebool.equals("1") ? true : false, prio.equals("1") ? true : false);
+			addFromConfig(first, second, chatPrefix, alertbool.equals("1") ? true : false, queuebool.equals("1") ? true : false, prio.equals("1") ? true : false);
 			
 		}
 	}

@@ -16,6 +16,7 @@ import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.exceptions.TAEModException;
 import tae.cosmetics.gui.GuiHome;
+import tae.cosmetics.gui.GuiScreenStalkerMod;
 import tae.cosmetics.gui.util.GuiOnOffButton;
 import tae.cosmetics.mods.BaseMod;
 import tae.cosmetics.util.PlayerAlert;
@@ -68,8 +69,11 @@ public class OnLogin implements Globals {
 				exception.post();
 			}
 			
-			PlayerAlert.updateQueuePositions();
-						
+			new Thread(() -> {
+	    		GuiScreenStalkerMod.updateResourceMap();
+				PlayerAlert.updateQueuePositions();
+			}).run();
+									
 		}
 	}
 	
