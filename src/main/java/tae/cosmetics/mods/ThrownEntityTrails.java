@@ -31,33 +31,85 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import tae.cosmetics.ColorCode;
+import tae.cosmetics.settings.Keybind;
 import tae.cosmetics.settings.Setting;
 import tae.cosmetics.util.PlayerUtils;
 
 public class ThrownEntityTrails extends BaseMod {
-
-	static public Setting<Boolean> enabled = new Setting<>("enabled thrown entity trails", false);
 	
-	static private HashSet<ThrownWrapper> entities = new HashSet<>();
+	static public final Setting<Boolean> enabled = new Setting<>("enabled thrown entity trails", false);
+	
+	static public final Setting<Boolean> trails = new Setting<>("show entity trails", false);
+	
+	final static public Setting<Boolean> textAlert = new Setting<>("get text alert of thrown entity", false);
+	
+	final static public Setting<Boolean> nbt = new Setting<>("get nbt data of thrown entity", false);
+	
+	final static public Setting<Boolean> showNameTags = new Setting<>("show thrown entity nametags", false);
+	
+	final static public Setting<Boolean> alwaysShow = new Setting<>("always show entity trails", false);
+	
+	final static public Setting<Float> trailLength = new Setting<>("thrown entity trail length", 10.0F);
+	
+	static public final Keybind keyBind = new Keybind("Toggle thrown entity data", 0, () -> {
+		
+		enabled.setValue(enabled.getValue() ? false : true);
+		
+		if(enabled.getValue()) {
+			PlayerUtils.sendMessage("Thrown Entity Data toggled on", ColorCode.LIGHT_PURPLE);
+		} else {
+			PlayerUtils.sendMessage("Thrown Entity Data toggled off", ColorCode.LIGHT_PURPLE);
+		}
+		
+	});
+	
+	final static private HashSet<ThrownWrapper> entities = new HashSet<>();
 	
 	@SubscribeEvent
 	public void onEntityJoinWorld(EntityJoinWorldEvent event) {
-		if(enabled.getValue()) {
-			Entity e = event.getEntity();
-			if(e instanceof EntityArrow) {
-				entities.add(new ThrownWrapper((EntityArrow) e));
-			} else if(e instanceof EntityEnderEye) {
-				entities.add(new ThrownWrapper((EntityEnderEye) e));
-			} else if(e instanceof EntityFireball) {
-				entities.add(new ThrownWrapper((EntityFireball) e));
-			} else if(e instanceof EntityThrowable) {
-				entities.add(new ThrownWrapper((EntityThrowable) e));
-			}
-		}
 		
-		if(entities.size() > 100) {
-			entities.clear();
-			PlayerUtils.sendMessage("All entity trail caches cleared due to high entity load.", ColorCode.RED);
+		synchronized(entities) {
+			
+			if(enabled.getValue()) {
+				
+				Entity e = event.getEntity();
+
+				if(textAlert.getValue() && (e instanceof EntityThrowable || e instanceof EntityArrow || e instanceof EntityEnderEye || e instanceof EntityFireball)) {
+					
+					PlayerUtils.sendMessage(event.getEntity().getName() + " entered render distance.", ColorCode.AQUA);
+					
+					if(nbt.getValue()) {
+						
+						NBTTagCompound compound = new NBTTagCompound();
+						
+						event.getEntity().writeToNBT(compound);
+						
+						PlayerUtils.sendMessage("NBT: " + compound.toString(), ColorCode.AQUA);
+						
+					}
+					
+				}
+				
+				if(trails.getValue()) {
+					
+					if(e instanceof EntityArrow) {
+						entities.add(new ThrownWrapper((EntityArrow) e));
+					} else if(e instanceof EntityEnderEye) {
+						entities.add(new ThrownWrapper((EntityEnderEye) e));
+					} else if(e instanceof EntityFireball) {
+						entities.add(new ThrownWrapper((EntityFireball) e));
+					} else if(e instanceof EntityThrowable) {
+						entities.add(new ThrownWrapper((EntityThrowable) e));
+					}
+					
+				}
+				
+			}
+			
+			if(entities.size() > 100) {
+				entities.clear();
+				PlayerUtils.sendMessage("All entity trail caches cleared due to high entity load.", ColorCode.RED);
+			}
 		}
 		
 	}
@@ -65,22 +117,26 @@ public class ThrownEntityTrails extends BaseMod {
 	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event) {
 		if(event.phase == Phase.END) {
-
-			Iterator<ThrownWrapper> iter = entities.iterator();
 			
-			while(iter.hasNext()) {
-				ThrownWrapper tw = iter.next();
+			synchronized(entities) { //I guess ticks and rendering are done if different threads; makes sense
 				
-				if(tw.entity.isEntityAlive() && tw.isMoving()) {
-					tw.updateLocation();
-				}
-				
-				if(!tw.isAlive()) {
-					iter.remove();
+				Iterator<ThrownWrapper> iter = entities.iterator();
+
+				while(iter.hasNext()) {
+					ThrownWrapper tw = iter.next();
+					
+					if(tw.entity.isEntityAlive() && tw.isMoving()) {
+						tw.updateLocation();
+					}
+					
+					if(!tw.isAlive()) {
+						iter.remove();
+					}
+			
 				}
 		
 			}
-	
+			
 		}
 	}
 	
@@ -89,23 +145,47 @@ public class ThrownEntityTrails extends BaseMod {
 		
 		Entity render = mc.getRenderViewEntity();
 		
-		for(ThrownWrapper tw : new HashSet<ThrownWrapper>(entities)) { //Prevents con mod exceptions Different threads?
+		synchronized(entities) {
 			
-			double d0 = render.prevPosX + (render.posX - render.prevPosX) * mc.getRenderPartialTicks();
-			double d1 = render.prevPosY + (render.posY - render.prevPosY) * mc.getRenderPartialTicks();
-			double d2 = render.prevPosZ + (render.posZ - render.prevPosZ) * mc.getRenderPartialTicks();
+			for(ThrownWrapper tw : entities) {
+				
+				//GlStateManager.pushMatrix();
+				
+				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+				GlStateManager.enableBlend();
+				GlStateManager.disableLighting();
+				GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+				GlStateManager.glLineWidth(3);
+				GlStateManager.disableTexture2D();
+				GlStateManager.depthMask(false);
+				
+				if(alwaysShow.getValue()) {
+					GlStateManager.disableDepth();
+				}
+				
+				double d0 = render.prevPosX + (render.posX - render.prevPosX) * mc.getRenderPartialTicks();
+				double d1 = render.prevPosY + (render.posY - render.prevPosY) * mc.getRenderPartialTicks();
+				double d2 = render.prevPosZ + (render.posZ - render.prevPosZ) * mc.getRenderPartialTicks();
+				
+				tw.draw(d0, d1, d2);
+				
+				if(alwaysShow.getValue()) {
+					GlStateManager.enableDepth();
+				}
+				
+				//GlStateManager.popMatrix();
+							
+			}
 			
-			tw.draw(d0, d1, d2);
-						
 		}
-		
+				
 	}
 	
 	static class ThrownWrapper {
 		
 		private Color color;
 		private Entity entity;
-		private ArrayList<Location> path = new ArrayList<>();
+		private ArrayList<Node> path = new ArrayList<>();
 		private String owner = "";
 		
 		private ThrownWrapper(EntityArrow e) {
@@ -254,7 +334,7 @@ public class ThrownEntityTrails extends BaseMod {
 			double d1 = entity.prevPosY + (entity.posY - entity.prevPosY) * mc.getRenderPartialTicks();
 			double d2 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * mc.getRenderPartialTicks();
 			
-			path.add(new Location(d0, d1, d2));
+			path.add(new Node(d0, d1, d2));
 		}
 		
 		private boolean isMoving() {
@@ -307,59 +387,38 @@ public class ThrownEntityTrails extends BaseMod {
 			if(path.isEmpty()) {
 				return;
 			}
-			
-			GlStateManager.pushMatrix();
-						
-			GlStateManager.shadeModel(7424);
-			GlStateManager.depthMask(true);
-			GlStateManager.enableCull();
-			GlStateManager.disableBlend();
-			GlStateManager.disableFog();
-		        
-			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			GlStateManager.enableBlend();
-			GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-			GlStateManager.glLineWidth(3);
-			GlStateManager.disableTexture2D();
-			GlStateManager.depthMask(false);
-			GlStateManager.disableDepth();
-			
+										
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder builder = tessellator.getBuffer();
 			
 			builder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
 			
-			Location first = path.get(0);
-			Location last = first;
+			Node first = path.get(0);
+			Node last = first;
 			builder.pos(first.x - x, first.y - y, first.z - z).color(color.getRed(), color.getGreen(), color.getBlue(), 0).endVertex();
 
-			Iterator<Location> iter = path.iterator();
+			Iterator<Node> iter = path.iterator();
 			
 			while(iter.hasNext()) {
 							
-				Location trip = iter.next();
+				Node trip = iter.next();
 				
 				if(trip.alpha < 0) {
 					iter.remove();
 				} else {
 					last = trip;
-					builder.pos(trip.x - x, trip.y - y, trip.z - z).color(color.getRed(), color.getGreen(), color.getBlue(), trip.alpha).endVertex();
-					trip.alpha -= 2;
+					builder.pos(trip.x - x, trip.y - y, trip.z - z).color(color.getRed(), color.getGreen(), color.getBlue(), (int)trip.alpha).endVertex();
+					trip.alpha -= 255D - 254.24D * trailLength.getValue();
 				}
 			}
 	
 			builder.pos(last.x - x, last.y - y, last.z - z).color(color.getRed(), color.getGreen(), color.getBlue(), 0).endVertex();
 			
 			tessellator.draw();
-			
-			GlStateManager.depthMask(true);
-			GlStateManager.enableTexture2D();
-			GlStateManager.disableBlend();
-			GlStateManager.enableDepth();
-			
-			GlStateManager.popMatrix();
-			
-			drawNamePlate(last.x, last.y, last.z);
+									
+			if(showNameTags.getValue()) {
+				drawNamePlate(last.x, last.y, last.z);
+			}
 			
 		}
 		
@@ -374,14 +433,14 @@ public class ThrownEntityTrails extends BaseMod {
 			}
 		}
 		
-		static class Location {
+		static class Node {
 			
 			private double x;
 			private double y;
 			private double z;
-			private int alpha = 255;
+			private double alpha = 255;
 			
-			private Location(double x, double y, double z) {
+			private Node(double x, double y, double z) {
 				this.x = x;
 				this.y = y;
 				this.z = z;

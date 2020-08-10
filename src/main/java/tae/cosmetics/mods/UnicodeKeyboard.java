@@ -19,9 +19,9 @@ import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.KeyboardInputEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.exceptions.TAEModException;
-import tae.cosmetics.gui.GuiBookTitleMod;
-import tae.cosmetics.gui.GuiScreenStalkerModPlayerOptions;
-import tae.cosmetics.gui.util.GuiDisplayListButton;
+import tae.cosmetics.guiscreen.button.GuiDisplayListButton;
+import tae.cosmetics.guiscreen.utilities.GuiBookTitleMod;
+import tae.cosmetics.guiscreen.utilities.GuiScreenStalkerModPlayerOptions;
 
 public class UnicodeKeyboard extends BaseMod {
 			
@@ -48,7 +48,7 @@ public class UnicodeKeyboard extends BaseMod {
 				
 			gui = event.getGui();
 			
-			event.getButtonList().add(new GuiDisplayListButton<TextType>(69, 0, 0, 80, 20, Sets.newHashSet(TextType.values()), TextType.NONE));
+			event.getButtonList().add(new GuiDisplayListButton<TextType>(69, 0, 0, 80, 20, Sets.newHashSet(TextType.values()), TextType.NONE, "Toggle thru pre-set keysets", 1));
 		}
 		
 	}
@@ -58,7 +58,7 @@ public class UnicodeKeyboard extends BaseMod {
 	public void click(ActionPerformedEvent.Post event) {
 		GuiButton button = event.getButton();
 		if(button.id == 69 && button instanceof GuiDisplayListButton<?>) {
-			((GuiDisplayListButton<?>) button).nextValue();
+			((GuiDisplayListButton<?>) button).changeStateOnClick();
 			thisType = (TextType) ((GuiDisplayListButton<?>) button).getValue();
 			if(thisType == TextType.NONE) {
 				enabled = false;

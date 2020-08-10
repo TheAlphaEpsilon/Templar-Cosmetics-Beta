@@ -3,7 +3,7 @@ package tae.cosmetics.gui.util.mainscreen;
 import java.awt.Color;
 
 import net.minecraft.network.Packet;
-import tae.cosmetics.gui.GuiCancelPackets;
+import tae.cosmetics.guiscreen.packets.GuiCancelPackets;
 
 public class CancelPacketsGuiList extends AbstractMoveableGuiList {
 

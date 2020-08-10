@@ -10,15 +10,30 @@ import net.minecraft.network.play.server.SPacketChat;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.ColorCode;
+import tae.cosmetics.settings.Keybind;
+import tae.cosmetics.settings.Setting;
+import tae.cosmetics.util.PlayerUtils;
 import tae.packetevent.PacketEvent;
 
 
 public class ChatEncryption extends BaseMod {
 
-	public static boolean enabled = false;
+	public static final Setting<Boolean> enabled = new Setting<>("Toggle Encryption", false);
 	
-	public static boolean showRaw = false;
+	public static final Setting<Boolean> showRaw = new Setting<>("Show raw chats", false);
 	
+	public static final Keybind toggle = new Keybind("Toggle chat encryption", 0, () -> {
+		enabled.setValue(enabled.getValue() ? false : true);
+		
+		if(enabled.getValue()) {
+			PlayerUtils.sendMessage("Chat Encryption Enabled", ColorCode.LIGHT_PURPLE);
+		} else {
+			PlayerUtils.sendMessage("Chat Encryption Disabled", ColorCode.LIGHT_PURPLE);
+		}
+		
+	});
+	
+		
 	private static final char notifier = '\\';
 	
 	private static final char preStamp = '!';
@@ -29,7 +44,7 @@ public class ChatEncryption extends BaseMod {
 	
 	@SubscribeEvent
 	public void chatOutgoing(PacketEvent.Outgoing event) {
-		if(!enabled || !(event.getPacket() instanceof CPacketChatMessage)) {
+		if(!enabled.getValue() || !(event.getPacket() instanceof CPacketChatMessage)) {
 			return;
 		}
 		
@@ -66,7 +81,7 @@ public class ChatEncryption extends BaseMod {
 							
 			if(brokenText[1].charAt(0) == notifier) {	
 				
-				if(!showRaw) {
+				if(!showRaw.getValue()) {
 					event.setCanceled(true);
 				}
 				

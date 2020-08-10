@@ -11,8 +11,8 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.network.Packet;
 import tae.cosmetics.exceptions.TAEModException;
-import tae.cosmetics.gui.AbstractTAEGuiScreen;
 import tae.cosmetics.gui.util.ScrollBar;
+import tae.cosmetics.guiscreen.AbstractTAEGuiScreen;
 
 public class GuiGenericPacketInformation extends AbstractTAEGuiScreen {
 	

@@ -33,7 +33,7 @@ public class GuiSetKeybind extends GuiTextField {
 			return true;
 		}
 		
-		if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
+		if (true || ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
 			this.keyCode = keyCode;
 			setWidthAndText();
 			return true;

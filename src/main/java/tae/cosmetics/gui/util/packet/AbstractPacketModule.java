@@ -7,8 +7,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.network.Packet;
-import tae.cosmetics.gui.util.GuiExtendPacketModuleButton;
-import tae.cosmetics.gui.util.GuiMorePacketInformationButton;
+import tae.cosmetics.guiscreen.button.GuiExtendButton;
+import tae.cosmetics.guiscreen.button.GuiMorePacketInformationButton;
 
 public abstract class AbstractPacketModule extends Gui {
 	
@@ -34,7 +34,7 @@ public abstract class AbstractPacketModule extends Gui {
 		
 	private String hoverText;
 	
-	private GuiExtendPacketModuleButton extendButton;
+	private GuiExtendButton extendButton;
 	
 	private GuiMorePacketInformationButton moreInfoButton;
 	
@@ -43,12 +43,12 @@ public abstract class AbstractPacketModule extends Gui {
 		this.timestamp = timestamp;
 		this.packet = packet;
 		
-		extendButton = new GuiExtendPacketModuleButton(0, 0, 0, this);
+		extendButton = new GuiExtendButton(0, 0, 0, this, "", 2);
 		
-		moreInfoButton = new GuiMorePacketInformationButton(0, 0, 0, packet);
+		moreInfoButton = new GuiMorePacketInformationButton(0, 0, 0, packet, "", 2);
 	}
 	
-	public GuiExtendPacketModuleButton extendButton() {
+	public GuiExtendButton extendButton() {
 		extendButton.x = x - 10;
 		extendButton.y = y;
 		return extendButton;

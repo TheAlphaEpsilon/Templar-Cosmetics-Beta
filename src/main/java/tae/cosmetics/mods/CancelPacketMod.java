@@ -3,17 +3,15 @@ package tae.cosmetics.mods;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import tae.cosmetics.gui.GuiCancelPackets;
+import tae.cosmetics.ColorCode;
 import tae.cosmetics.gui.util.mainscreen.CancelPacketsGuiList;
+import tae.cosmetics.guiscreen.packets.GuiCancelPackets;
 import tae.cosmetics.settings.Keybind;
 import tae.cosmetics.settings.Setting;
+import tae.cosmetics.util.PlayerUtils;
 import tae.packetevent.PacketEvent;
 
 public class CancelPacketMod extends BaseMod {
-	
-	public static final Keybind toggle = new Keybind("Toggle Cancel Packets",0, () -> {
-		toggle();
-	});
 	
 	private static Setting<Integer> xCoord = new Setting<>("Cancel Packets X Coord", 50);
 	private static Setting<Integer> yCoord = new Setting<>("Cancel Packets Y Coord", 50);
@@ -21,6 +19,15 @@ public class CancelPacketMod extends BaseMod {
 	private static CancelPacketsGuiList gui = new CancelPacketsGuiList("Canceling Packets:", (int)xCoord.getValue(), (int)yCoord.getValue());
 	
 	public static boolean enabled = false;
+	
+	public static final Keybind toggle = new Keybind("Toggle Cancel Packets",0, () -> {
+		toggle();
+		if(enabled) {
+			PlayerUtils.sendMessage("Canceling Packets",ColorCode.RED);
+		} else {
+			PlayerUtils.sendMessage("Stopped Canceling Packets", ColorCode.GREEN);
+		}
+	});
 	
 	public static void toggle() {
 		enabled = enabled ? false : true;

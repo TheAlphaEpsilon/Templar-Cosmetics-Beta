@@ -3,9 +3,9 @@ package tae.cosmetics.mods;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import tae.cosmetics.settings.Setting;
-import tae.cosmetics.util.API2b2tdev;
 import tae.cosmetics.util.PlayerAlert;
-import tae.cosmetics.util.RebaneGetter;
+import tae.cosmetics.webscrapers.API2b2tdev;
+import tae.cosmetics.webscrapers.RebaneGetter;
 
 public class QueuePeekMod extends BaseMod {
 	

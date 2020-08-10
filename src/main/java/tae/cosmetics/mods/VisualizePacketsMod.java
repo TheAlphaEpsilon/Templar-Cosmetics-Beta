@@ -14,6 +14,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
+import tae.cosmetics.ColorCode;
 import tae.cosmetics.gui.util.mainscreen.VisualizePacketsGuiList;
 import tae.cosmetics.gui.util.packet.AbstractPacketModule;
 import tae.cosmetics.gui.util.packet.TimestampModule;
@@ -22,27 +23,33 @@ import tae.cosmetics.gui.util.packet.client.*;
 import tae.cosmetics.gui.util.packet.server.*;
 import tae.cosmetics.settings.Keybind;
 import tae.cosmetics.settings.Setting;
+import tae.cosmetics.util.PlayerUtils;
 import tae.packetevent.PacketEvent;
 
 public class VisualizePacketsMod extends BaseMod {
 
-	public static final Keybind toggle = new Keybind("Start Tracking Packets",0, () -> {
-		toggle();
-	});
-	
-	public static final Keybind addMarker = new Keybind("Add Packet Marker",0, () -> {
-		addMarker(new TimestampModule(Instant.now().toEpochMilli()));
-	});
-
 	private static boolean enabled = false;
 	
-	private static Setting<Integer> xCoord = new Setting<>("Visualize x Coord", new Integer(100));
-	private static Setting<Integer> yCoord = new Setting<>("Visualize y Coord", new Integer(50));
+	private static Setting<Integer> xCoord = new Setting<>("Visualize x Coord", 100);
+	private static Setting<Integer> yCoord = new Setting<>("Visualize y Coord", 50);
 	
 	private static VisualizePacketsGuiList gui = new VisualizePacketsGuiList("Caught Packet:", xCoord.getValue(), yCoord.getValue());
 	
 	public static ArrayList<AbstractPacketModule> modulesToDraw = new ArrayList<>();
 
+	public static final Keybind toggle = new Keybind("Start Tracking Packets",0, () -> {
+		toggle();
+		if(enabled) {
+			PlayerUtils.sendMessage("Tracking Packets",ColorCode.LIGHT_PURPLE);
+		} else {
+			PlayerUtils.sendMessage("Stopped Tracking Packets", ColorCode.GREEN);
+		}
+	});
+	
+	public static final Keybind addMarker = new Keybind("Add Packet Marker",0, () -> {
+		addMarker(new TimestampModule(Instant.now().toEpochMilli()));
+	});
+	
 	public static void toggle() {
 		enabled = enabled ? false : true;
 		if(enabled) {
@@ -102,232 +109,247 @@ public class VisualizePacketsMod extends BaseMod {
 	}
 	
 	//Epic coder skillz upcoming
+	public static AbstractPacketModule getModuleFromPacket(Packet<?> packet, long timestamp) {
+		
+		if(packet instanceof CPacketAnimation) {
+			return new CPacketAnimationModule((CPacketAnimation) packet, timestamp);
+		} else if(packet instanceof CPacketChatMessage) {
+			return new CPacketChatMessageModule((CPacketChatMessage) packet, timestamp);
+		} else if(packet instanceof CPacketClickWindow) {
+			return new CPacketClickWindowModule((CPacketClickWindow) packet, timestamp);
+		} else if(packet instanceof CPacketClientSettings) {
+			return new CPacketClientSettingsModule((CPacketClientSettings) packet, timestamp);
+		} else if(packet instanceof CPacketClientStatus) {
+			return new CPacketClientStatusModule((CPacketClientStatus) packet, timestamp);
+		} else if(packet instanceof CPacketCloseWindow) {
+			return new CPacketCloseWindowModule((CPacketCloseWindow) packet, timestamp);
+		} else if(packet instanceof CPacketConfirmTeleport) {
+			return new CPacketConfirmTeleportModule((CPacketConfirmTeleport) packet, timestamp);
+		} else if(packet instanceof CPacketConfirmTransaction) {
+			return new CPacketConfirmTransactionModule((CPacketConfirmTransaction) packet, timestamp);
+		} else if(packet instanceof CPacketCreativeInventoryAction) {
+			return new CPacketCreativeInventoryActionModule((CPacketCreativeInventoryAction) packet, timestamp);
+		} else if(packet instanceof CPacketCustomPayload) {
+			return new CPacketCustomPayloadModule((CPacketCustomPayload) packet, timestamp);
+		} else if(packet instanceof CPacketEnchantItem) {
+			return new CPacketEnchantItemModule((CPacketEnchantItem) packet, timestamp);
+		} else if(packet instanceof CPacketEntityAction) {
+			return new CPacketEntityActionModule((CPacketEntityAction) packet, timestamp);
+		} else if(packet instanceof CPacketHeldItemChangeModule) {
+			return new CPacketHeldItemChangeModule((CPacketHeldItemChange) packet, timestamp);
+		} else if(packet instanceof CPacketInput) {
+			return new CPacketInputModule((CPacketInput) packet, timestamp);
+		} else if(packet instanceof CPacketKeepAlive) {
+			return new CPacketKeepAliveModule((CPacketKeepAlive) packet, timestamp);
+		} else if(packet instanceof CPacketPing) {
+			return new CPacketPingModule((CPacketPing) packet, timestamp);
+		} else if(packet instanceof CPacketPlayerAbilities) {
+			return new CPacketPlayerAbilitiesModule((CPacketPlayerAbilities) packet, timestamp);
+		} else if(packet instanceof CPacketPlayerDigging) {
+			return new CPacketPlayerDiggingModule((CPacketPlayerDigging) packet, timestamp);
+		} else if(packet instanceof CPacketPlayer) {
+			return new CPacketPlayerModule((CPacketPlayer) packet, timestamp);
+		} else if(packet instanceof CPacketPlayerTryUseItem) {
+			return new CPacketPlayerTryUseItemModule((CPacketPlayerTryUseItem) packet, timestamp);
+		} else if(packet instanceof CPacketPlayerTryUseItemOnBlock) {
+			return new CPacketPlayerTryUseItemOnBlockModule((CPacketPlayerTryUseItemOnBlock) packet, timestamp);
+		} else if(packet instanceof CPacketRecipeInfo) {
+			return new CPacketRecipeInfoModule((CPacketRecipeInfo) packet, timestamp);
+		} else if(packet instanceof CPacketResourcePackStatus) {
+			return new CPacketResourcePackStatusModule((CPacketResourcePackStatus) packet, timestamp);
+		} else if(packet instanceof CPacketSeenAdvancements) {
+			return new CPacketSeenAdvancementsModule((CPacketSeenAdvancements) packet, timestamp);
+		} else if(packet instanceof CPacketSpectate) {
+			return new CPacketSpectateModule((CPacketSpectate) packet, timestamp);
+		} else if(packet instanceof CPacketSteerBoat) {
+			return new CPacketSteerBoatModule((CPacketSteerBoat) packet, timestamp);
+		} else if(packet instanceof CPacketTabComplete) {
+			return new CPacketTabCompleteModule((CPacketTabComplete) packet, timestamp);
+		} else if(packet instanceof CPacketUpdateSign) {
+			return new CPacketUpdateSignModule((CPacketUpdateSign) packet, timestamp);
+		} else if(packet instanceof CPacketUseEntity) {
+			return new CPacketUseEntityModule((CPacketUseEntity) packet, timestamp);
+		} else if(packet instanceof CPacketVehicleMove) {
+			return new CPacketVehicleMoveModule((CPacketVehicleMove) packet, timestamp);
+		} else if(packet instanceof SPacketAdvancementInfo) {
+			return new SPacketAdvancementInfoModule((SPacketAdvancementInfo) packet, timestamp);
+		} else if(packet instanceof SPacketAnimation) {
+			return new SPacketAnimationModule((SPacketAnimation) packet, timestamp);
+		} else if(packet instanceof SPacketBlockAction) {
+			return new SPacketBlockActionModule((SPacketBlockAction) packet, timestamp);
+		} else if(packet instanceof SPacketBlockBreakAnim) {
+			return new SPacketBlockBreakAnimModule((SPacketBlockBreakAnim) packet, timestamp);
+		} else if(packet instanceof SPacketBlockChange) {
+			return new SPacketBlockChangeModule((SPacketBlockChange) packet, timestamp);
+		} else if(packet instanceof SPacketCamera) {
+			return new SPacketCameraModule((SPacketCamera) packet, timestamp);
+		} else if(packet instanceof SPacketChangeGameState) {
+			return new SPacketChangeGameStateModule((SPacketChangeGameState) packet, timestamp);
+		} else if(packet instanceof SPacketChat) {
+			return new SPacketChatModule((SPacketChat) packet, timestamp);
+		} else if(packet instanceof SPacketChunkData) {
+			return new SPacketChunkDataModule((SPacketChunkData) packet, timestamp);
+		} else if(packet instanceof SPacketCloseWindow) {
+			return new SPacketCloseWindowModule((SPacketCloseWindow) packet, timestamp);
+		} else if(packet instanceof SPacketCollectItem) {
+			return new SPacketCollectItemModule((SPacketCollectItem) packet, timestamp);
+		} else if(packet instanceof SPacketCombatEvent) {
+			return new SPacketCombatEventModule((SPacketCombatEvent) packet, timestamp);
+		} else if(packet instanceof SPacketConfirmTransaction) {
+			return new SPacketConfirmTransactionModule((SPacketConfirmTransaction) packet, timestamp);
+		} else if(packet instanceof SPacketCooldown) {
+			return new SPacketCooldownModule((SPacketCooldown) packet, timestamp);
+		} else if(packet instanceof SPacketCustomPayload) {
+			return new SPacketCustomPayloadModule((SPacketCustomPayload) packet, timestamp);
+		} else if(packet instanceof SPacketCustomSound) {
+			return new SPacketCustomSoundModule((SPacketCustomSound) packet, timestamp);
+		} else if(packet instanceof SPacketDestroyEntities) {
+			return new SPacketDestroyEntitiesModule((SPacketDestroyEntities) packet, timestamp);
+		} else if(packet instanceof SPacketDisplayObjective) {
+			return new SPacketDisplayObjectiveModule((SPacketDisplayObjective) packet, timestamp);
+		} else if(packet instanceof SPacketEffect) {
+			return new SPacketEffectModule((SPacketEffect) packet, timestamp);
+		} else if(packet instanceof SPacketEntity) {
+			return new SPacketEntityModule((SPacketEntity) packet, timestamp);
+		} else if(packet instanceof SPacketEntityAttach) {
+			return new SPacketEntityAttachModule((SPacketEntityAttach) packet, timestamp);
+		} else if(packet instanceof SPacketEntityEffect) {
+			return new SPacketEntityEffectModule((SPacketEntityEffect) packet, timestamp);
+		} else if(packet instanceof SPacketEntityEquipment) {
+			return new SPacketEntityEquipmentModule((SPacketEntityEquipment) packet, timestamp);
+		} else if(packet instanceof SPacketEntityHeadLook) {
+			return new SPacketEntityHeadLookModule((SPacketEntityHeadLook) packet, timestamp);
+		} else if(packet instanceof SPacketEntityMetadata) {
+			return new SPacketEntityMetadataModule((SPacketEntityMetadata) packet, timestamp);
+		} else if(packet instanceof SPacketEntityProperties) {
+			return new SPacketEntityPropertiesModule((SPacketEntityProperties) packet, timestamp);
+		} else if(packet instanceof SPacketEntityStatus) {
+			return new SPacketEntityStatusModule((SPacketEntityStatus) packet, timestamp);
+		} else if(packet instanceof SPacketEntityTeleport) {
+			return new SPacketEntityTeleportModule((SPacketEntityTeleport) packet, timestamp);
+		} else if(packet instanceof SPacketEntityVelocity) {
+			return new SPacketEntityVelocityModule((SPacketEntityVelocity) packet, timestamp);
+		} else if(packet instanceof SPacketExplosion) {
+			return new SPacketExplosionModule((SPacketExplosion) packet, timestamp);
+		} else if(packet instanceof SPacketHeldItemChange) {
+			return new SPacketHeldItemChangeModule((SPacketHeldItemChange) packet, timestamp);
+		} else if(packet instanceof SPacketKeepAlive) {
+			return new SPacketKeepAliveModule((SPacketKeepAlive) packet, timestamp);
+		} else if(packet instanceof SPacketMaps) {
+			return new SPacketMapsModule((SPacketMaps) packet, timestamp);
+		} else if(packet instanceof SPacketMoveVehicle) {
+			return new SPacketMoveVehicleModule((SPacketMoveVehicle) packet, timestamp);
+		} else if(packet instanceof SPacketMultiBlockChange) {
+			return new SPacketMultiBlockChangeModule((SPacketMultiBlockChange) packet, timestamp);
+		} else if(packet instanceof SPacketOpenWindow) {
+			return new SPacketOpenWindowModule((SPacketOpenWindow) packet, timestamp);
+		} else if(packet instanceof SPacketParticles) {
+			return new SPacketParticlesModule((SPacketParticles) packet, timestamp);
+		} else if(packet instanceof SPacketPlayerAbilities) {
+			return new SPacketPlayerAbilitiesModule((SPacketPlayerAbilities) packet, timestamp);
+		} else if(packet instanceof SPacketPlayerListHeaderFooter) {
+			return new SPacketPlayerListHeaderFooterModule((SPacketPlayerListHeaderFooter) packet, timestamp);
+		} else if(packet instanceof SPacketPlayerListItem) {
+			return new SPacketPlayerListItemModule((SPacketPlayerListItem) packet, timestamp);
+		} else if(packet instanceof SPacketPlayerPosLook) {
+			return new SPacketPlayerPosLookModule((SPacketPlayerPosLook) packet, timestamp);
+		} else if(packet instanceof SPacketPong) {
+			return new SPacketPongModule((SPacketPong) packet, timestamp);
+		} else if(packet instanceof SPacketRecipeBook) {
+			return new SPacketRecipeBookModule((SPacketRecipeBook) packet, timestamp);
+		} else if(packet instanceof SPacketRemoveEntityEffect) {
+			return new SPacketRemoveEntityEffectModule((SPacketRemoveEntityEffect) packet, timestamp);
+		} else if(packet instanceof SPacketResourcePackSend) {
+			return new SPacketResourcePackSendModule((SPacketResourcePackSend) packet, timestamp);
+		} else if(packet instanceof SPacketRespawn) {
+			return new SPacketRespawnModule((SPacketRespawn) packet, timestamp);
+		} else if(packet instanceof SPacketScoreboardObjective) {
+			return new SPacketScoreboardObjectiveModule((SPacketScoreboardObjective) packet, timestamp);
+		} else if(packet instanceof SPacketSelectAdvancementsTab) {
+			return new SPacketSelectAdvancementsTabModule((SPacketSelectAdvancementsTab) packet, timestamp);
+		} else if(packet instanceof SPacketServerDifficulty) {
+			return new SPacketServerDifficultyModule((SPacketServerDifficulty) packet, timestamp);
+		} else if(packet instanceof SPacketServerInfo) {
+			return new SPacketServerInfoModule((SPacketServerInfo) packet, timestamp);
+		} else if(packet instanceof SPacketSetExperience) {
+			return new SPacketSetExperienceModule((SPacketSetExperience) packet, timestamp);
+		} else if(packet instanceof SPacketSetPassengers) {
+			return new SPacketSetPassengersModule((SPacketSetPassengers) packet, timestamp);
+		} else if(packet instanceof SPacketSetSlot) {
+			return new SPacketSetSlotModule((SPacketSetSlot) packet, timestamp);
+		} else if(packet instanceof SPacketSignEditorOpen) {
+			return new SPacketSignEditorOpenModule((SPacketSignEditorOpen) packet, timestamp);
+		} else if(packet instanceof SPacketSoundEffect) {
+			return new SPacketSoundEffectModule((SPacketSoundEffect) packet, timestamp);
+		} else if(packet instanceof SPacketSpawnExperienceOrb) {
+			return new SPacketSpawnExperienceOrbModule((SPacketSpawnExperienceOrb) packet, timestamp);
+		} else if(packet instanceof SPacketSpawnGlobalEntity) {
+			return new SPacketSpawnGlobalEntityModule((SPacketSpawnGlobalEntity) packet, timestamp);
+		} else if(packet instanceof SPacketSpawnMob) {
+			return new SPacketSpawnMobModule((SPacketSpawnMob) packet, timestamp);
+		} else if(packet instanceof SPacketSpawnObject) {
+			return new SPacketSpawnObjectModule((SPacketSpawnObject) packet, timestamp);
+		} else if(packet instanceof SPacketSpawnPainting) {
+			return new SPacketSpawnPaintingModule((SPacketSpawnPainting) packet, timestamp);
+		} else if(packet instanceof SPacketSpawnPlayer) {
+			return new SPacketSpawnPlayerModule((SPacketSpawnPlayer) packet, timestamp);
+		} else if(packet instanceof SPacketSpawnPosition) {
+			return new SPacketSpawnPositionModule((SPacketSpawnPosition) packet, timestamp);
+		} else if(packet instanceof SPacketStatistics) {
+			return new SPacketStatisticsModule((SPacketStatistics) packet, timestamp);
+		} else if(packet instanceof SPacketTabComplete) {
+			return new SPacketTabCompleteModule((SPacketTabComplete) packet, timestamp);
+		} else if(packet instanceof SPacketTeams) {
+			return new SPacketTeamsModule((SPacketTeams) packet, timestamp);
+		} else if(packet instanceof SPacketTimeUpdate) {
+			return new SPacketTimeUpdateModule((SPacketTimeUpdate) packet, timestamp);
+		} else if(packet instanceof SPacketTitle) {
+			return new SPacketTitleModule((SPacketTitle) packet, timestamp);
+		} else if(packet instanceof SPacketUnloadChunk) {
+			return new SPacketUnloadChunkModule((SPacketUnloadChunk) packet, timestamp);
+		} else if(packet instanceof SPacketUpdateBossInfo) {
+			return new SPacketUpdateBossInfoModule((SPacketUpdateBossInfo) packet, timestamp);
+		} else if(packet instanceof SPacketUpdateHealth) {
+			return new SPacketUpdateHealthModule((SPacketUpdateHealth) packet, timestamp);
+		} else if(packet instanceof SPacketUpdateScore) {
+			return new SPacketUpdateScoreModule((SPacketUpdateScore) packet, timestamp);
+		} else if(packet instanceof SPacketUpdateTileEntity) {
+			return new SPacketUpdateTileEntityModule((SPacketUpdateTileEntity) packet, timestamp);
+		} else if(packet instanceof SPacketUseBed) {
+			return new SPacketUseBedModule((SPacketUseBed) packet, timestamp);
+		} else if(packet instanceof SPacketWindowItems) {
+			return new SPacketWindowItemsModule((SPacketWindowItems) packet, timestamp);
+		} else if(packet instanceof SPacketWindowProperty) {
+			return new SPacketWindowPropertyModule((SPacketWindowProperty) packet, timestamp);
+		} else if(packet instanceof SPacketWorldBorder) {
+			return new SPacketWorldBorderModule((SPacketWorldBorder) packet, timestamp);
+		} else {
+			return null;
+		}
+	}
+	
 	
 	private static void addClientPacket(Packet<?> packet, long timestamp) {
 	
-		if(packet instanceof CPacketAnimation) {
-			modulesToDraw.add(new CPacketAnimationModule((CPacketAnimation) packet, timestamp));
-		} else if(packet instanceof CPacketChatMessage) {
-			modulesToDraw.add(new CPacketChatMessageModule((CPacketChatMessage) packet, timestamp));
-		} else if(packet instanceof CPacketClickWindow) {
-			modulesToDraw.add(new CPacketClickWindowModule((CPacketClickWindow) packet, timestamp));
-		} else if(packet instanceof CPacketClientSettings) {
-			modulesToDraw.add(new CPacketClientSettingsModule((CPacketClientSettings) packet, timestamp));
-		} else if(packet instanceof CPacketClientStatus) {
-			modulesToDraw.add(new CPacketClientStatusModule((CPacketClientStatus) packet, timestamp));
-		} else if(packet instanceof CPacketCloseWindow) {
-			modulesToDraw.add(new CPacketCloseWindowModule((CPacketCloseWindow) packet, timestamp));
-		} else if(packet instanceof CPacketConfirmTeleport) {
-			modulesToDraw.add(new CPacketConfirmTeleportModule((CPacketConfirmTeleport) packet, timestamp));
-		} else if(packet instanceof CPacketConfirmTransaction) {
-			modulesToDraw.add(new CPacketConfirmTransactionModule((CPacketConfirmTransaction) packet, timestamp));
-		} else if(packet instanceof CPacketCreativeInventoryAction) {
-			modulesToDraw.add(new CPacketCreativeInventoryActionModule((CPacketCreativeInventoryAction) packet, timestamp));
-		} else if(packet instanceof CPacketCustomPayload) {
-			modulesToDraw.add(new CPacketCustomPayloadModule((CPacketCustomPayload) packet, timestamp));
-		} else if(packet instanceof CPacketEnchantItem) {
-			modulesToDraw.add(new CPacketEnchantItemModule((CPacketEnchantItem) packet, timestamp));
-		} else if(packet instanceof CPacketEntityAction) {
-			modulesToDraw.add(new CPacketEntityActionModule((CPacketEntityAction) packet, timestamp));
-		} else if(packet instanceof CPacketHeldItemChangeModule) {
-			modulesToDraw.add(new CPacketHeldItemChangeModule((CPacketHeldItemChange) packet, timestamp));
-		} else if(packet instanceof CPacketInput) {
-			modulesToDraw.add(new CPacketInputModule((CPacketInput) packet, timestamp));
-		} else if(packet instanceof CPacketKeepAlive) {
-			modulesToDraw.add(new CPacketKeepAliveModule((CPacketKeepAlive) packet, timestamp));
-		} else if(packet instanceof CPacketPing) {
-			modulesToDraw.add(new CPacketPingModule((CPacketPing) packet, timestamp));
-		} else if(packet instanceof CPacketPlayerAbilities) {
-			modulesToDraw.add(new CPacketPlayerAbilitiesModule((CPacketPlayerAbilities) packet, timestamp));
-		} else if(packet instanceof CPacketPlayerDigging) {
-			modulesToDraw.add(new CPacketPlayerDiggingModule((CPacketPlayerDigging) packet, timestamp));
-		} else if(packet instanceof CPacketPlayer) {
-			modulesToDraw.add(new CPacketPlayerModule((CPacketPlayer) packet, timestamp));
-		} else if(packet instanceof CPacketPlayerTryUseItem) {
-			modulesToDraw.add(new CPacketPlayerTryUseItemModule((CPacketPlayerTryUseItem) packet, timestamp));
-		} else if(packet instanceof CPacketPlayerTryUseItemOnBlock) {
-			modulesToDraw.add(new CPacketPlayerTryUseItemOnBlockModule((CPacketPlayerTryUseItemOnBlock) packet, timestamp));
-		} else if(packet instanceof CPacketRecipeInfo) {
-			modulesToDraw.add(new CPacketRecipeInfoModule((CPacketRecipeInfo) packet, timestamp));
-		} else if(packet instanceof CPacketResourcePackStatus) {
-			modulesToDraw.add(new CPacketResourcePackStatusModule((CPacketResourcePackStatus) packet, timestamp));
-		} else if(packet instanceof CPacketSeenAdvancements) {
-			modulesToDraw.add(new CPacketSeenAdvancementsModule((CPacketSeenAdvancements) packet, timestamp));
-		} else if(packet instanceof CPacketSpectate) {
-			modulesToDraw.add(new CPacketSpectateModule((CPacketSpectate) packet, timestamp));
-		} else if(packet instanceof CPacketSteerBoat) {
-			modulesToDraw.add(new CPacketSteerBoatModule((CPacketSteerBoat) packet, timestamp));
-		} else if(packet instanceof CPacketTabComplete) {
-			modulesToDraw.add(new CPacketTabCompleteModule((CPacketTabComplete) packet, timestamp));
-		} else if(packet instanceof CPacketUpdateSign) {
-			modulesToDraw.add(new CPacketUpdateSignModule((CPacketUpdateSign) packet, timestamp));
-		} else if(packet instanceof CPacketUseEntity) {
-			modulesToDraw.add(new CPacketUseEntityModule((CPacketUseEntity) packet, timestamp));
-		} else if(packet instanceof CPacketVehicleMove) {
-			modulesToDraw.add(new CPacketVehicleMoveModule((CPacketVehicleMove) packet, timestamp));
-		} else {
-			modulesToDraw.add(new UnknownPacketModule(packet, timestamp, true));
+		AbstractPacketModule module = getModuleFromPacket(packet, timestamp);
+		
+		if(module == null) {
+			module = new UnknownPacketModule(packet, timestamp, true);
 		}
+		
+		modulesToDraw.add(module);
 		
 	}
 	
 	private static void addServerPacket(Packet<?> packet, long timestamp) {
 
-		if(packet instanceof SPacketAdvancementInfo) {
-			modulesToDraw.add(new SPacketAdvancementInfoModule((SPacketAdvancementInfo) packet, timestamp));
-		} else if(packet instanceof SPacketAnimation) {
-			modulesToDraw.add(new SPacketAnimationModule((SPacketAnimation) packet, timestamp));
-		} else if(packet instanceof SPacketBlockAction) {
-			modulesToDraw.add(new SPacketBlockActionModule((SPacketBlockAction) packet, timestamp));
-		} else if(packet instanceof SPacketBlockBreakAnim) {
-			modulesToDraw.add(new SPacketBlockBreakAnimModule((SPacketBlockBreakAnim) packet, timestamp));
-		} else if(packet instanceof SPacketBlockChange) {
-			modulesToDraw.add(new SPacketBlockChangeModule((SPacketBlockChange) packet, timestamp));
-		} else if(packet instanceof SPacketCamera) {
-			modulesToDraw.add(new SPacketCameraModule((SPacketCamera) packet, timestamp));
-		} else if(packet instanceof SPacketChangeGameState) {
-			modulesToDraw.add(new SPacketChangeGameStateModule((SPacketChangeGameState) packet, timestamp));
-		} else if(packet instanceof SPacketChat) {
-			modulesToDraw.add(new SPacketChatModule((SPacketChat) packet, timestamp));
-		} else if(packet instanceof SPacketChunkData) {
-			modulesToDraw.add(new SPacketChunkDataModule((SPacketChunkData) packet, timestamp));
-		} else if(packet instanceof SPacketCloseWindow) {
-			modulesToDraw.add(new SPacketCloseWindowModule((SPacketCloseWindow) packet, timestamp));
-		} else if(packet instanceof SPacketCollectItem) {
-			modulesToDraw.add(new SPacketCollectItemModule((SPacketCollectItem) packet, timestamp));
-		} else if(packet instanceof SPacketCombatEvent) {
-			modulesToDraw.add(new SPacketCombatEventModule((SPacketCombatEvent) packet, timestamp));
-		} else if(packet instanceof SPacketConfirmTransaction) {
-			modulesToDraw.add(new SPacketConfirmTransactionModule((SPacketConfirmTransaction) packet, timestamp));
-		} else if(packet instanceof SPacketCooldown) {
-			modulesToDraw.add(new SPacketCooldownModule((SPacketCooldown) packet, timestamp));
-		} else if(packet instanceof SPacketCustomPayload) {
-			modulesToDraw.add(new SPacketCustomPayloadModule((SPacketCustomPayload) packet, timestamp));
-		} else if(packet instanceof SPacketCustomSound) {
-			modulesToDraw.add(new SPacketCustomSoundModule((SPacketCustomSound) packet, timestamp));
-		} else if(packet instanceof SPacketDestroyEntities) {
-			modulesToDraw.add(new SPacketDestroyEntitiesModule((SPacketDestroyEntities) packet, timestamp));
-		} else if(packet instanceof SPacketDisplayObjective) {
-			modulesToDraw.add(new SPacketDisplayObjectiveModule((SPacketDisplayObjective) packet, timestamp));
-		} else if(packet instanceof SPacketEffect) {
-			modulesToDraw.add(new SPacketEffectModule((SPacketEffect) packet, timestamp));
-		} else if(packet instanceof SPacketEntity) {
-			modulesToDraw.add(new SPacketEntityModule((SPacketEntity) packet, timestamp));
-		} else if(packet instanceof SPacketEntityAttach) {
-			modulesToDraw.add(new SPacketEntityAttachModule((SPacketEntityAttach) packet, timestamp));
-		} else if(packet instanceof SPacketEntityEffect) {
-			modulesToDraw.add(new SPacketEntityEffectModule((SPacketEntityEffect) packet, timestamp));
-		} else if(packet instanceof SPacketEntityEquipment) {
-			modulesToDraw.add(new SPacketEntityEquipmentModule((SPacketEntityEquipment) packet, timestamp));
-		} else if(packet instanceof SPacketEntityHeadLook) {
-			modulesToDraw.add(new SPacketEntityHeadLookModule((SPacketEntityHeadLook) packet, timestamp));
-		} else if(packet instanceof SPacketEntityMetadata) {
-			modulesToDraw.add(new SPacketEntityMetadataModule((SPacketEntityMetadata) packet, timestamp));
-		} else if(packet instanceof SPacketEntityProperties) {
-			modulesToDraw.add(new SPacketEntityPropertiesModule((SPacketEntityProperties) packet, timestamp));
-		} else if(packet instanceof SPacketEntityStatus) {
-			modulesToDraw.add(new SPacketEntityStatusModule((SPacketEntityStatus) packet, timestamp));
-		} else if(packet instanceof SPacketEntityTeleport) {
-			modulesToDraw.add(new SPacketEntityTeleportModule((SPacketEntityTeleport) packet, timestamp));
-		} else if(packet instanceof SPacketEntityVelocity) {
-			modulesToDraw.add(new SPacketEntityVelocityModule((SPacketEntityVelocity) packet, timestamp));
-		} else if(packet instanceof SPacketExplosion) {
-			modulesToDraw.add(new SPacketExplosionModule((SPacketExplosion) packet, timestamp));
-		} else if(packet instanceof SPacketHeldItemChange) {
-			modulesToDraw.add(new SPacketHeldItemChangeModule((SPacketHeldItemChange) packet, timestamp));
-		} else if(packet instanceof SPacketKeepAlive) {
-			modulesToDraw.add(new SPacketKeepAliveModule((SPacketKeepAlive) packet, timestamp));
-		} else if(packet instanceof SPacketMaps) {
-			modulesToDraw.add(new SPacketMapsModule((SPacketMaps) packet, timestamp));
-		} else if(packet instanceof SPacketMoveVehicle) {
-			modulesToDraw.add(new SPacketMoveVehicleModule((SPacketMoveVehicle) packet, timestamp));
-		} else if(packet instanceof SPacketMultiBlockChange) {
-			modulesToDraw.add(new SPacketMultiBlockChangeModule((SPacketMultiBlockChange) packet, timestamp));
-		} else if(packet instanceof SPacketOpenWindow) {
-			modulesToDraw.add(new SPacketOpenWindowModule((SPacketOpenWindow) packet, timestamp));
-		} else if(packet instanceof SPacketParticles) {
-			modulesToDraw.add(new SPacketParticlesModule((SPacketParticles) packet, timestamp));
-		} else if(packet instanceof SPacketPlayerAbilities) {
-			modulesToDraw.add(new SPacketPlayerAbilitiesModule((SPacketPlayerAbilities) packet, timestamp));
-		} else if(packet instanceof SPacketPlayerListHeaderFooter) {
-			modulesToDraw.add(new SPacketPlayerListHeaderFooterModule((SPacketPlayerListHeaderFooter) packet, timestamp));
-		} else if(packet instanceof SPacketPlayerListItem) {
-			modulesToDraw.add(new SPacketPlayerListItemModule((SPacketPlayerListItem) packet, timestamp));
-		} else if(packet instanceof SPacketPlayerPosLook) {
-			modulesToDraw.add(new SPacketPlayerPosLookModule((SPacketPlayerPosLook) packet, timestamp));
-		} else if(packet instanceof SPacketPong) {
-			modulesToDraw.add(new SPacketPongModule((SPacketPong) packet, timestamp));
-		} else if(packet instanceof SPacketRecipeBook) {
-			modulesToDraw.add(new SPacketRecipeBookModule((SPacketRecipeBook) packet, timestamp));
-		} else if(packet instanceof SPacketRemoveEntityEffect) {
-			modulesToDraw.add(new SPacketRemoveEntityEffectModule((SPacketRemoveEntityEffect) packet, timestamp));
-		} else if(packet instanceof SPacketResourcePackSend) {
-			modulesToDraw.add(new SPacketResourcePackSendModule((SPacketResourcePackSend) packet, timestamp));
-		} else if(packet instanceof SPacketRespawn) {
-			modulesToDraw.add(new SPacketRespawnModule((SPacketRespawn) packet, timestamp));
-		} else if(packet instanceof SPacketScoreboardObjective) {
-			modulesToDraw.add(new SPacketScoreboardObjectiveModule((SPacketScoreboardObjective) packet, timestamp));
-		} else if(packet instanceof SPacketSelectAdvancementsTab) {
-			modulesToDraw.add(new SPacketSelectAdvancementsTabModule((SPacketSelectAdvancementsTab) packet, timestamp));
-		} else if(packet instanceof SPacketServerDifficulty) {
-			modulesToDraw.add(new SPacketServerDifficultyModule((SPacketServerDifficulty) packet, timestamp));
-		} else if(packet instanceof SPacketServerInfo) {
-			modulesToDraw.add(new SPacketServerInfoModule((SPacketServerInfo) packet, timestamp));
-		} else if(packet instanceof SPacketSetExperience) {
-			modulesToDraw.add(new SPacketSetExperienceModule((SPacketSetExperience) packet, timestamp));
-		} else if(packet instanceof SPacketSetPassengers) {
-			modulesToDraw.add(new SPacketSetPassengersModule((SPacketSetPassengers) packet, timestamp));
-		} else if(packet instanceof SPacketSetSlot) {
-			modulesToDraw.add(new SPacketSetSlotModule((SPacketSetSlot) packet, timestamp));
-		} else if(packet instanceof SPacketSignEditorOpen) {
-			modulesToDraw.add(new SPacketSignEditorOpenModule((SPacketSignEditorOpen) packet, timestamp));
-		} else if(packet instanceof SPacketSoundEffect) {
-			modulesToDraw.add(new SPacketSoundEffectModule((SPacketSoundEffect) packet, timestamp));
-		} else if(packet instanceof SPacketSpawnExperienceOrb) {
-			modulesToDraw.add(new SPacketSpawnExperienceOrbModule((SPacketSpawnExperienceOrb) packet, timestamp));
-		} else if(packet instanceof SPacketSpawnGlobalEntity) {
-			modulesToDraw.add(new SPacketSpawnGlobalEntityModule((SPacketSpawnGlobalEntity) packet, timestamp));
-		} else if(packet instanceof SPacketSpawnMob) {
-			modulesToDraw.add(new SPacketSpawnMobModule((SPacketSpawnMob) packet, timestamp));
-		} else if(packet instanceof SPacketSpawnObject) {
-			modulesToDraw.add(new SPacketSpawnObjectModule((SPacketSpawnObject) packet, timestamp));
-		} else if(packet instanceof SPacketSpawnPainting) {
-			modulesToDraw.add(new SPacketSpawnPaintingModule((SPacketSpawnPainting) packet, timestamp));
-		} else if(packet instanceof SPacketSpawnPlayer) {
-			modulesToDraw.add(new SPacketSpawnPlayerModule((SPacketSpawnPlayer) packet, timestamp));
-		} else if(packet instanceof SPacketSpawnPosition) {
-			modulesToDraw.add(new SPacketSpawnPositionModule((SPacketSpawnPosition) packet, timestamp));
-		} else if(packet instanceof SPacketStatistics) {
-			modulesToDraw.add(new SPacketStatisticsModule((SPacketStatistics) packet, timestamp));
-		} else if(packet instanceof SPacketTabComplete) {
-			modulesToDraw.add(new SPacketTabCompleteModule((SPacketTabComplete) packet, timestamp));
-		} else if(packet instanceof SPacketTeams) {
-			modulesToDraw.add(new SPacketTeamsModule((SPacketTeams) packet, timestamp));
-		} else if(packet instanceof SPacketTimeUpdate) {
-			modulesToDraw.add(new SPacketTimeUpdateModule((SPacketTimeUpdate) packet, timestamp));
-		} else if(packet instanceof SPacketTitle) {
-			modulesToDraw.add(new SPacketTitleModule((SPacketTitle) packet, timestamp));
-		} else if(packet instanceof SPacketUnloadChunk) {
-			modulesToDraw.add(new SPacketUnloadChunkModule((SPacketUnloadChunk) packet, timestamp));
-		} else if(packet instanceof SPacketUpdateBossInfo) {
-			modulesToDraw.add(new SPacketUpdateBossInfoModule((SPacketUpdateBossInfo) packet, timestamp));
-		} else if(packet instanceof SPacketUpdateHealth) {
-			modulesToDraw.add(new SPacketUpdateHealthModule((SPacketUpdateHealth) packet, timestamp));
-		} else if(packet instanceof SPacketUpdateScore) {
-			modulesToDraw.add(new SPacketUpdateScoreModule((SPacketUpdateScore) packet, timestamp));
-		} else if(packet instanceof SPacketUpdateTileEntity) {
-			modulesToDraw.add(new SPacketUpdateTileEntityModule((SPacketUpdateTileEntity) packet, timestamp));
-		} else if(packet instanceof SPacketUseBed) {
-			modulesToDraw.add(new SPacketUseBedModule((SPacketUseBed) packet, timestamp));
-		} else if(packet instanceof SPacketWindowItems) {
-			modulesToDraw.add(new SPacketWindowItemsModule((SPacketWindowItems) packet, timestamp));
-		} else if(packet instanceof SPacketWindowProperty) {
-			modulesToDraw.add(new SPacketWindowPropertyModule((SPacketWindowProperty) packet, timestamp));
-		} else if(packet instanceof SPacketWorldBorder) {
-			modulesToDraw.add(new SPacketWorldBorderModule((SPacketWorldBorder) packet, timestamp));
-		} else {
-			modulesToDraw.add(new UnknownPacketModule(packet, timestamp, false));
+		AbstractPacketModule module = getModuleFromPacket(packet, timestamp);
+		
+		if(module == null) {
+			module = new UnknownPacketModule(packet, timestamp, false);
 		}
+		
+		modulesToDraw.add(module);
 		
 	}
 }

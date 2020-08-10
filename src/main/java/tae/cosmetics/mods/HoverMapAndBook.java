@@ -23,7 +23,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.ColorCode;
-import tae.cosmetics.gui.GuiBookTitleMod;
+import tae.cosmetics.guiscreen.utilities.GuiBookTitleMod;
 import tae.cosmetics.settings.Keybind;
 import tae.cosmetics.settings.Setting;
 import tae.cosmetics.util.PlayerUtils;

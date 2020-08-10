@@ -7,7 +7,7 @@ import net.minecraft.network.play.server.SPacketTabComplete;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 import tae.cosmetics.ColorCode;
-import tae.cosmetics.gui.GuiScreenStalkerMod;
+import tae.cosmetics.guiscreen.utilities.GuiScreenStalkerMod;
 import tae.cosmetics.util.PlayerAlert;
 import tae.packetevent.PacketEvent;
 

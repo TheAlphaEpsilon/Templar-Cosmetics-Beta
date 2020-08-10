@@ -5,25 +5,24 @@ import java.lang.reflect.Modifier;
 
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
-import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import tae.cosmetics.exceptions.TAEModException;
-import tae.cosmetics.gui.GuiBookArtSaveLoad;
-import tae.cosmetics.gui.GuiCancelPackets;
-import tae.cosmetics.gui.GuiScreenStalkerMod;
+import tae.cosmetics.guiscreen.TAEGuiScreens;
+import tae.cosmetics.guiscreen.packets.GuiCancelPackets;
+import tae.cosmetics.guiscreen.utilities.GuiBookArtSaveLoad;
+import tae.cosmetics.mods.AllMods;
+import tae.cosmetics.mods.BaseMod;
 import tae.cosmetics.settings.Keybind;
 import tae.cosmetics.settings.KeybindListener;
 import tae.cosmetics.settings.Setting;
-import tae.cosmetics.util.API2b2tdev;
 import tae.cosmetics.util.PlayerAlert;
-import tae.cosmetics.util.RebaneGetter;
-import tae.cosmetics.util.TrustManagerSetup;
+import tae.cosmetics.webscrapers.API2b2tdev;
+import tae.cosmetics.webscrapers.RebaneGetter;
+import tae.cosmetics.webscrapers.TrustManagerSetup;
 
 
 @Mod(modid = TAECosmetics.MODID, useMetadata = true)
@@ -41,14 +40,12 @@ public class TAECosmetics implements Globals {
     @EventHandler
     public void preInit(FMLInitializationEvent event) {
       
+    	
     	TrustManagerSetup.initTrustManager();
     	    	
     	RebaneGetter.init();
 		API2b2tdev.update();
 		
-    	ModLoader ini = new ModLoader();
-    	ini.searchPackage(modPath);
-    	ini.init();
     	    	    	    	    	
     }
     
@@ -58,6 +55,11 @@ public class TAECosmetics implements Globals {
     		MinecraftForge.EVENT_BUS.register(new tae.packetevent.ChannelHandlerInput());
     		MinecraftForge.EVENT_BUS.register(new OnLogin());
     		MinecraftForge.EVENT_BUS.register(new KeybindListener());
+    		
+    		for(BaseMod mod : AllMods.mods) {
+        		MinecraftForge.EVENT_BUS.register(mod);
+    		}
+    		
     		
     		new Thread(() -> {
         		
@@ -80,6 +82,10 @@ public class TAECosmetics implements Globals {
     		GuiCancelPackets.save();
     		GuiBookArtSaveLoad.save();
     	}));
+    	
+    	//Load all instances of guis and therefore the keybinds associated.
+    	//Definitely a better way to do all of this but whatever
+    	new TAEGuiScreens();
     }
     
     private static void changeMainMenu() {

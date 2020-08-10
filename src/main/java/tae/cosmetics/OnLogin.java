@@ -15,9 +15,9 @@ import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tae.cosmetics.exceptions.TAEModException;
-import tae.cosmetics.gui.GuiHome;
-import tae.cosmetics.gui.GuiScreenStalkerMod;
-import tae.cosmetics.gui.util.GuiOnOffButton;
+import tae.cosmetics.guiscreen.GuiHome;
+import tae.cosmetics.guiscreen.button.GuiOnOffButton;
+import tae.cosmetics.guiscreen.utilities.GuiScreenStalkerMod;
 import tae.cosmetics.mods.BaseMod;
 import tae.cosmetics.util.PlayerAlert;
 import tae.cosmetics.util.PlayerUtils;
@@ -27,7 +27,8 @@ public class OnLogin implements Globals {
 	
 	private static final String[] texts = new String[] {
 			"TEMPLAR ON TOP", "TEMPLAR CUBE!", "bruh", "2 PAY 2 WIN", "EZZZZZZ", "Corner base ftw", "Don't grief mapart!",
-    		"SalC1 pizza stream!", "Oldest anarchy server", "I slept on SalC1's couch"
+    		"SalC1 pizza stream!", "Oldest anarchy server", "I slept on SalC1's couch",
+    		"We're only racist post-ironicly"
 	};
 	
 	private static Random rand = new Random();

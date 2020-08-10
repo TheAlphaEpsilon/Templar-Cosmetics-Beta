@@ -93,7 +93,10 @@ public class FileHelper {
 			ArrayList<String> toReturn = new ArrayList<>();
 			
 			while(scanner.hasNextLine()) {
-				toReturn.add(scanner.nextLine());
+				String nextLine = scanner.nextLine();
+				if(!nextLine.isEmpty()) {
+					toReturn.add(nextLine);
+				}
 			}
 			
 			scanner.close();

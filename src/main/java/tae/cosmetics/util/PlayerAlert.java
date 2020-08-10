@@ -7,6 +7,9 @@ import java.util.Set;
 
 import tae.cosmetics.ColorCode;
 import tae.cosmetics.Globals;
+import tae.cosmetics.webscrapers.API2b2tdev;
+import tae.cosmetics.webscrapers.MojangGetter;
+import tae.cosmetics.webscrapers.RebaneGetter;
 
 public class PlayerAlert implements Globals{
 			
@@ -441,7 +444,7 @@ public class PlayerAlert implements Globals{
 		}
 		
 		private boolean needNameUpdate() {
-			if(newname == null) return false;
+			if(newname == null || newname.equals("")) return false;
 			return !oldname.equals(newname);
 		}
 		

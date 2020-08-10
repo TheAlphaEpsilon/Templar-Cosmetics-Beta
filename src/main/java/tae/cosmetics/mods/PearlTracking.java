@@ -1,7 +1,6 @@
 package tae.cosmetics.mods;
 
 import java.time.Instant;
-import java.util.ArrayList;
 
 import net.minecraft.entity.item.EntityEnderPearl;
 import net.minecraft.init.Items;
@@ -27,7 +26,7 @@ public class PearlTracking extends BaseMod {
 		
 	}
 	
-	public static Setting<Boolean> enabled = new Setting<>("Toggle Pearl Tracking", false);
+	public static final Setting<Boolean> enabled = new Setting<>("Toggle Pearl Tracking", false);
 	
 	public static final Keybind toggle = new Keybind("Toggle Pearl Tracking",0, () -> {
 		enabled.setValue((boolean)PearlTracking.enabled.getValue() ? false : true);
@@ -38,7 +37,7 @@ public class PearlTracking extends BaseMod {
 			PlayerUtils.sendMessage("Pearl Tracking Disabled", ColorCode.LIGHT_PURPLE);
 		}
 	});
-
+	
 	private static boolean usedItem = false;
 	
 	@SubscribeEvent
@@ -72,12 +71,6 @@ public class PearlTracking extends BaseMod {
 			usedItem = false;
 			
 			StringBuilder toWrite = new StringBuilder();
-			
-			ArrayList<String> readData = FileHelper.readFile(fileName);
-			
-			for(String s : readData) {
-				toWrite.append(s + "\n");
-			}
 			
 			toWrite.append("Timestamp: " + Instant.now().getEpochSecond() + ", ");
 			toWrite.append("Player Name: " + mc.getSession().getUsername() + ", ");
