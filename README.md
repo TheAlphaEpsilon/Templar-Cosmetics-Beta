@@ -24,7 +24,7 @@ Please note that this is a Beta mod and errors may occur. For any comments, ques
 
 ### Mods
 
-##### **Brief description of the mods in Templar Cosmetics**
+#### Brief description of the mods in Templar Cosmetics
 
 <details><summary><b>Booktitle</b></summary>
 
@@ -40,8 +40,8 @@ Please note that this is a Beta mod and errors may occur. For any comments, ques
 <details><summary><b>Stalker Mod</b></summary>
 
 - Add players and see if they are online, in-queue, or offline
-- Able to approximate a player's queue position in normal queue and priority queue
-- Able to create prefixes to player's chat messages to make them stand out
+- Able to approximate a players queue position in normal queue and priority queue
+- Able to add prefixes to specific players chat messages to make them stand out
 - Able to get alerts when players join the game or are in queue
 - Supports name changes
 </details>
@@ -58,7 +58,7 @@ Please note that this is a Beta mod and errors may occur. For any comments, ques
 
 <details><summary><b>Packet Cancelling</b></summary>
 
-- Intercept packets leaving or being received by your client
+- Intercept packets sent or received by your client
 </details>
 
 <details><summary><b>Packet Tracking</b></summary>
@@ -69,7 +69,7 @@ Please note that this is a Beta mod and errors may occur. For any comments, ques
 <details><summary><b>Book and Map Hovering</b></summary>
 
 - Allows you to see the contents of a book or map in your inventory by hovering over them and pressing the keybind.
-- Also shows the nbt data of all items
+- Also shows the NBT data of all items
 </details>
 
 <details><summary><b>Encrypted Chat</b></summary>
