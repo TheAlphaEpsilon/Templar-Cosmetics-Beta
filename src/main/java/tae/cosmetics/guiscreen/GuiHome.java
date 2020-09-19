@@ -29,6 +29,7 @@ public class GuiHome extends GuiScreen {
 	private GuiGenericButton utilities = new GuiGenericButton(0, 0, 0, 150, 20, "General Utilities", "Toggle and Modify Utilities", 1);
 	private GuiGenericButton render = new GuiGenericButton(1, 0, 0, 150, 20, "Render", "Changes how you see things", 1);
 	private GuiGenericButton packet = new GuiGenericButton(2, 0, 0, 150, 20, "Packets", "See packet info", 1);
+	private GuiGenericButton motd = new GuiGenericButton(4, 0, 0, 150, 20, "MOTD", "See updates by the dev", 1);
 	
 	private GuiOnOffButton toggleMenuBackground = new GuiOnOffButton(3, 0, 0, 170, 20, "Toggle Menu Background: ", TAECosmetics.changeTitle.getValue(), "Toggle the menu background", 1);
 	
@@ -44,6 +45,7 @@ public class GuiHome extends GuiScreen {
 		buttonList.add(utilities);
 		buttonList.add(render);
 		buttonList.add(packet);
+		buttonList.add(motd);
 
 		buttonList.add(toggleMenuBackground);
 		/*		
@@ -99,6 +101,10 @@ public class GuiHome extends GuiScreen {
 		} else if(button == toggleMenuBackground) {
 			toggleMenuBackground.changeStateOnClick();
 			TAECosmetics.changeTitle.setValue(toggleMenuBackground.getValue());
+		} else if(button == motd) {
+			mc.addScheduledTask(() -> {
+				mc.displayGuiScreen(new GuiMOTD(this));
+			});
 		}
 	}
 	
@@ -165,6 +171,9 @@ public class GuiHome extends GuiScreen {
 		
 		packet.x = x - packet.width / 2;
 		packet.y = y - 22;
+		
+		motd.x = x - motd.width / 2;
+		motd.y = y + 2;
 		
 		//bookModKey.x = x - 10;
 		//bookModKey.y = y - 67;

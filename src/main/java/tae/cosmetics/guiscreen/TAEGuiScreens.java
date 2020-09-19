@@ -10,7 +10,7 @@ import tae.cosmetics.guiscreen.utilities.BookArt;
 import tae.cosmetics.guiscreen.utilities.GuiBookTitleMod;
 import tae.cosmetics.guiscreen.utilities.GuiScreenStalkerMod;
 
-public class TAEGuiScreens {
+public class TAEGuiScreens { //Used to init all guis for keybinds and configs. Prob a better way but whatever
 
 	static {
 	
@@ -26,7 +26,7 @@ public class TAEGuiScreens {
 				new GuiScreenVisualizePackets(packets);
 				GuiCancelPackets.instance();
 				new GuiScreenMoveScreenElements(packets);
-			
+			GuiMOTD motd = new GuiMOTD(home);
 	}
 	
 }

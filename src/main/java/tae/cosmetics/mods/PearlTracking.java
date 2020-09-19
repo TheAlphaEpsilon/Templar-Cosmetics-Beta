@@ -78,7 +78,7 @@ public class PearlTracking extends BaseMod {
 			toWrite.append("X: " + (int)mc.player.posX + ", ");
 			toWrite.append("Z: " + (int)mc.player.posZ + ", ");
 			
-			float yaw = mc.player.rotationYaw;
+			float yaw = Math.abs(mc.player.rotationYaw);
 			
 			toWrite.append("Yaw: " + yaw + " (");
 			

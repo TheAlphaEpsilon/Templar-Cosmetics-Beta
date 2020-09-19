@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiCommandBlock;
 import net.minecraft.client.gui.GuiRepair;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiScreenBook;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -41,14 +42,21 @@ public class UnicodeKeyboard extends BaseMod {
 				event.getGui() instanceof GuiRepair ||
 				event.getGui() instanceof GuiEditSign ||
 				event.getGui() instanceof GuiScreenStalkerModPlayerOptions ||
-				event.getGui() instanceof GuiScreenBook) {
+				event.getGui() instanceof GuiScreenBook ||
+				event.getGui().getClass().getSimpleName().contains("GuiGhostwriterBook")) { //For ghostwriter
 				
 			//int i = event.getGui().width / 2;
 			//int j = event.getGui().height / 2;
 				
 			gui = event.getGui();
 			
-			event.getButtonList().add(new GuiDisplayListButton<TextType>(69, 0, 0, 80, 20, Sets.newHashSet(TextType.values()), TextType.NONE, "Toggle thru pre-set keysets", 1));
+			GuiButton buttonToAdd = new GuiDisplayListButton<TextType>(69, 0, 0, 80, 20, Sets.newHashSet(TextType.values()), TextType.NONE, "Toggle thru pre-set keysets", 1);
+			
+			if(event.getGui().getClass().getSimpleName().contains("GuiGhostwriterBook")) {
+				buttonToAdd.y = new ScaledResolution(mc).getScaledHeight() - buttonToAdd.height;
+			}
+			
+			event.getButtonList().add(buttonToAdd);
 		}
 		
 	}

@@ -202,18 +202,22 @@ public class GuiCancelPackets extends GuiScreen {
 		int counter = -1;
 		for(Class<? extends Packet<?>> clazz : client) {
 			
-			try {
-				String info;
-				AbstractPacketModule module = VisualizePacketsMod.getModuleFromPacket(clazz.newInstance(), 0);
-				if(module == null) {
-					info = "";
-				} else {
-					info = module.getTip();
-				}
-				clientbuttons.add(new GuiOnOffButton(counter, 0, 0, 150, 20, clazz.getSimpleName().substring(7) + " ", !canceledPackets.contains(clazz), info, 1));
-			} catch (Exception e) {
-				//new TAEModException(e.getClass(), e.getMessage()).post();
+			String info;
+			
+			AbstractPacketModule module = null;
+
+			
+			try{
+				module = VisualizePacketsMod.getModuleFromPacket(clazz.newInstance(), 0);
+			} catch (Exception e) {}
+			
+			
+			if(module == null) {
+				info = "";
+			} else {
+				info = module.getTip();
 			}
+			clientbuttons.add(new GuiOnOffButton(counter, 0, 0, 150, 20, clazz.getSimpleName().substring(7) + " ", !canceledPackets.contains(clazz), info, 1));
 			
 		}
 		

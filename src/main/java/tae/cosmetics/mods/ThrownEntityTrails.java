@@ -149,7 +149,7 @@ public class ThrownEntityTrails extends BaseMod {
 			
 			for(ThrownWrapper tw : entities) {
 				
-				//GlStateManager.pushMatrix();
+				GlStateManager.pushMatrix();
 				
 				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 				GlStateManager.enableBlend();
@@ -173,7 +173,7 @@ public class ThrownEntityTrails extends BaseMod {
 					GlStateManager.enableDepth();
 				}
 				
-				//GlStateManager.popMatrix();
+				GlStateManager.popMatrix();
 							
 			}
 			
