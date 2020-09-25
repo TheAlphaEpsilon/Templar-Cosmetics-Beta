@@ -15,11 +15,14 @@ public class MyMOTD {
 
 	private static int errors = 0;
 	
+	private static String motd = "Unable to get the MOTD.";
+	
 	public static String getMOTD() {
-		return getDataFrom("https://pastebin.com/raw/ydw60Pqn");
+		getDataFrom("https://pastebin.com/raw/ydw60Pqn");
+		return motd;
 	}
 	
-	private static String getDataFrom(String url) {
+	private static void getDataFrom(String url) {
 		
 		try {
 			SSLContext sslcontext = SSLContext.getInstance("TLSv1.2");
@@ -31,13 +34,12 @@ public class MyMOTD {
 		    HttpGet httpget = new HttpGet(url);
 		    HttpResponse response = client.execute(httpget);
 		    
-		    return EntityUtils.toString(response.getEntity());
+		    motd = EntityUtils.toString(response.getEntity());
 		} catch (Exception e) {
 			if(++errors > 5) { 
 				new TAEModException(e.getClass(), e.getMessage()).post();
 			 	new TAEModException(API2b2tdev.class, "Cannot get MOTD information.").post();
 			}
-			return null;
 		}
 	    
 	}
