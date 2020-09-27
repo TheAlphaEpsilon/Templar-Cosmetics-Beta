@@ -284,7 +284,7 @@ public class GuiCancelPackets extends GuiScreen {
 					
 					Class<?> clazz = iter.next();
 					
-					if(Arrays.asList(clientbuttons).contains(button1)) {	
+					if(clientbuttons.contains(button1)) {	
 					
 						if(("CPacket" + button1.getText()).equals(clazz.getSimpleName() + " ")) {
 							iter.remove();
@@ -304,7 +304,7 @@ public class GuiCancelPackets extends GuiScreen {
 				
 			} else {
 					
-				if(Arrays.asList(clientbuttons).contains(button1)) {
+				if(clientbuttons.contains(button1)) {
 					for(Class<? extends Packet<?>> clazz : client) {				
 					
 						if(button1.getText().equals(clazz.getSimpleName().substring(7) + " ")) {
